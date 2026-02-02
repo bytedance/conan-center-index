@@ -1,0 +1,110 @@
+diff --git a/src/core_functions/aggregate/distributive/arg_min_max.cpp b/src/core_functions/aggregate/distributive/arg_min_max.cpp
+index 2fa9929158..35499878dc 100644
+--- a/src/core_functions/aggregate/distributive/arg_min_max.cpp
++++ b/src/core_functions/aggregate/distributive/arg_min_max.cpp
+@@ -133,8 +133,8 @@ struct ArgMinMaxBase {
+ 			return;
+ 		}
+ 		if (!target.is_initialized || COMPARATOR::Operation(source.value, target.value)) {
+-			STATE::template AssignValue(target.arg, source.arg, target.is_initialized);
+-			STATE::template AssignValue(target.value, source.value, target.is_initialized);
++			STATE::AssignValue(target.arg, source.arg, target.is_initialized);
++			STATE::AssignValue(target.value, source.value, target.is_initialized);
+ 			target.is_initialized = true;
+ 		}
+ 	}
+@@ -144,7 +144,7 @@ struct ArgMinMaxBase {
+ 		if (!state.is_initialized) {
+ 			finalize_data.ReturnNull();
+ 		} else {
+-			STATE::template ReadValue(finalize_data.result, state.arg, target);
++			STATE::ReadValue(finalize_data.result, state.arg, target);
+ 		}
+ 	}
+
+@@ -209,7 +209,7 @@ struct VectorArgMinMaxBase : ArgMinMaxBase<COMPARATOR> {
+ 			return;
+ 		}
+ 		if (!target.is_initialized || COMPARATOR::Operation(source.value, target.value)) {
+-			STATE::template AssignValue(target.value, source.value, target.is_initialized);
++			STATE::AssignValue(target.value, source.value, target.is_initialized);
+ 			AssignVector(target, *source.arg, 0);
+ 			target.is_initialized = true;
+ 		}
+diff --git a/src/core_functions/aggregate/distributive/bitagg.cpp b/src/core_functions/aggregate/distributive/bitagg.cpp
+index 52b671d96f..136e410f2a 100644
+--- a/src/core_functions/aggregate/distributive/bitagg.cpp
++++ b/src/core_functions/aggregate/distributive/bitagg.cpp
+@@ -50,10 +50,10 @@ struct BitwiseOperation {
+ 	template <class INPUT_TYPE, class STATE, class OP>
+ 	static void Operation(STATE &state, const INPUT_TYPE &input, AggregateUnaryInput &) {
+ 		if (!state.is_set) {
+-			OP::template Assign(state, input);
++			OP::Assign(state, input);
+ 			state.is_set = true;
+ 		} else {
+-			OP::template Execute(state, input);
++			OP::Execute(state, input);
+ 		}
+ 	}
+
+@@ -76,10 +76,10 @@ struct BitwiseOperation {
+ 		}
+ 		if (!target.is_set) {
+ 			// target is NULL, use source value directly.
+-			OP::template Assign(target, source.value);
++			OP::Assign(target, source.value);
+ 			target.is_set = true;
+ 		} else {
+-			OP::template Execute(target, source.value);
++			OP::Execute(target, source.value);
+ 		}
+ 	}
+
+diff --git a/src/core_functions/aggregate/distributive/minmax.cpp b/src/core_functions/aggregate/distributive/minmax.cpp
+index fa087bab38..6f2e34e286 100644
+--- a/src/core_functions/aggregate/distributive/minmax.cpp
++++ b/src/core_functions/aggregate/distributive/minmax.cpp
+@@ -428,7 +428,7 @@ struct VectorMinMaxBase {
+ 			if (!state.value) {
+ 				Assign(state, input, i);
+ 			} else {
+-				OP::template Execute(state, input, i, count);
++				OP::Execute(state, input, i, count);
+ 			}
+ 		}
+ 	}
+@@ -440,7 +440,7 @@ struct VectorMinMaxBase {
+ 		} else if (!target.value) {
+ 			Assign(target, *source.value, 0);
+ 		} else {
+-			OP::template Execute(target, *source.value, 0, 1);
++			OP::Execute(target, *source.value, 0, 1);
+ 		}
+ 	}
+
+diff --git a/src/execution/operator/aggregate/physical_window.cpp b/src/execution/operator/aggregate/physical_window.cpp
+index 7b879edf5b..84737e9436 100644
+--- a/src/execution/operator/aggregate/physical_window.cpp
++++ b/src/execution/operator/aggregate/physical_window.cpp
+@@ -384,7 +384,7 @@ private:
+ template <typename T, typename OP>
+ struct OperationCompare : public std::function<bool(T, T)> {
+ 	inline bool operator()(const T &lhs, const T &val) const {
+-		return OP::template Operation(lhs, val);
++		return OP::Operation(lhs, val);
+ 	}
+ };
+
+diff --git a/third_party/fsst/libfsst.hpp b/third_party/fsst/libfsst.hpp
+index a0e4256..5771e83 100644
+--- a/third_party/fsst/libfsst.hpp
++++ b/third_party/fsst/libfsst.hpp
+@@ -17,6 +17,7 @@
+ // You can contact the authors via the FSST source repository : https://github.com/cwida/fsst 
+ #include <algorithm>
+ #include <cassert>
++#include <cstdint>
+ #include <cstring>
+ #include <fstream>
+ #include <iostream>
