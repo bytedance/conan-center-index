@@ -12,16 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-versions:
-  "1.0.2-fix":
-    folder: all
-  "1.0.2":
-    folder: all
-  "1.0.1-jsonpath01":
-    folder: all
-  "1.0.1-jsonpath":
-    folder: all
-  "1.0.1":
-    folder: all
-  "1.0.0":
-    folder: all
+cmake_minimum_required(VERSION 3.8)
+project(test_package)
+
+include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+conan_basic_setup(TARGETS)
+
+add_subdirectory(
+  ${CMAKE_CURRENT_SOURCE_DIR}/../test_package/ ${CMAKE_CURRENT_BINARY_DIR}/test_package/
+)

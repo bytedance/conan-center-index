@@ -1,18 +1,40 @@
+# Copyright (c) ByteDance Ltd. and/or its affiliates.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 from conan import ConanFile
 from conan.errors import ConanInvalidConfiguration
 from conan.tools.build import check_min_cppstd
-from conan.tools.files import apply_conandata_patches, export_conandata_patches, get, copy
+from conan.tools.files import (
+    apply_conandata_patches,
+    export_conandata_patches,
+    get,
+    copy,
+)
 from conan.tools.layout import basic_layout
 from conan.tools.microsoft import is_msvc
-from conan.tools.scm import Version
+from conan.tools import scm
 import os
+import re
 
 required_conan_version = ">=1.53.0"
 
 
 class SonicCppConan(ConanFile):
     name = "sonic-cpp"
-    description = "A fast JSON serializing & deserializing library, accelerated by SIMD."
+    description = (
+        "A fast JSON serializing & deserializing library, accelerated by SIMD."
+    )
     license = "Apache-2.0"
     url = "https://github.com/conan-io/conan-center-index"
     homepage = "https://github.com/bytedance/sonic-cpp"
@@ -52,22 +74,32 @@ class SonicCppConan(ConanFile):
             check_min_cppstd(self, self._min_cppstd)
 
         supported_archs = ["x86", "x86_64"]
-        if Version(self.version) >= "1.0.1":
-            supported_archs.extend(["armv8", "armv8.3"])
-        if self.settings.arch not in supported_archs:
-            raise ConanInvalidConfiguration(f"{self.ref} doesn't support {self.settings.arch}.")
+        supported_archs.extend(["armv8", "armv8.3", "armv9"])
 
         if is_msvc(self):
             raise ConanInvalidConfiguration(f"{self.ref} doesn't support MSVC now.")
 
     def source(self):
-        get(self, **self.conan_data["sources"][self.version], strip_root=True)
+        sonic_version_pattern = r"0\.\d\.\d+"
+        if re.findall(sonic_version_pattern, self.version):
+            git = scm.Git(self, folder="..")
+            git.clone(self.conan_data["sources"][self.version]["url"], target="src")
+            git = scm.Git(self, folder=self.source_folder)
+            commit = self.conan_data["sources"][self.version]["revision"]
+            git.checkout(commit)
+        else:
+            get(self, **self.conan_data["sources"][self.version], strip_root=True)
 
     def build(self):
         apply_conandata_patches(self)
 
     def package(self):
-        copy(self, pattern="LICENSE", dst=os.path.join(self.package_folder, "licenses"), src=self.source_folder)
+        copy(
+            self,
+            pattern="LICENSE",
+            dst=os.path.join(self.package_folder, "licenses"),
+            src=self.source_folder,
+        )
         copy(
             self,
             pattern="*.h",
@@ -80,4 +112,5 @@ class SonicCppConan(ConanFile):
         self.cpp_info.libdirs = []
 
         if self.settings.compiler in ["gcc", "clang", "apple-clang"]:
-            self.cpp_info.cxxflags.extend(["-mavx2", "-mpclmul"])
+            if self.settings.arch in ["x86", "x86_64"]:
+                self.cpp_info.cxxflags.extend(["-mavx2", "-mpclmul"])
