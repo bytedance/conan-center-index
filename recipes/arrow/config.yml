@@ -13,6 +13,8 @@ versions:
     folder: all
   "16.1.0":
     folder: all
+  "15.0.1-oss":
+    folder: all
   "15.0.0":
     folder: all
   "14.0.2":
