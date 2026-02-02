@@ -538,8 +538,9 @@ class LLVMCoreConan(ConanFile):
         if not self.options.shared:
             build_info = self._read_build_info()
             components = build_info["components"]
-
             for component_name, data in components.items():
+                if component_name in ["Remarks", "LTO"]:
+                    continue # libLTO.so and libRemarks.so should not be linked for static builds
                 self.cpp_info.components[component_name].set_property("cmake_target_name", component_name)
                 self.cpp_info.components[component_name].libs = [component_name]
                 self.cpp_info.components[component_name].requires = data["requires"]
