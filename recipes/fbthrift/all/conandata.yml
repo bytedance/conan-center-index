@@ -1,0 +1,9 @@
+sources:
+  "2022.10.31.00":
+    url: "https://github.com/facebook/fbthrift/archive/refs/tags/v2022.10.31.00.tar.gz"
+    sha256: "816d89ec43e88e4b54fa9d098e6489b364e30bf510c1ef10175e0a25c483b212"
+patches:
+  "2022.10.31.00":
+    - patch_file: "patches/0001-fix-find-thrift1.patch"
+      patch_description: "find THRIFT1"
+      patch_type: "conan"
