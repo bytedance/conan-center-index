@@ -394,6 +394,8 @@ class ArrowConan(ConanFile):
     def build_requirements(self):
         if Version(self.version) >= "13.0.0":
             self.tool_requires("cmake/[>=3.16 <4]")
+        if self.options.with_protobuf:
+            self.tool_requires("protobuf/<host_version>")
 
     def source(self):
         get(self, **self.conan_data["sources"][self.version],
@@ -698,8 +700,8 @@ class ArrowConan(ConanFile):
             self.cpp_info.components["libarrow_testing"].requires = ["libarrow"]
 
         # TODO: to remove in conan v2
-        
-        
+
+
         self.cpp_info.components["libarrow"].names["cmake_find_package"] = "arrow"
         self.cpp_info.components["libarrow"].names["cmake_find_package_multi"] = "arrow"
         if self.options.parquet:
