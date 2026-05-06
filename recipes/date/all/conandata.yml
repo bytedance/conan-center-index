@@ -25,6 +25,9 @@ patches:
     - patch_file: "patches/3.0.4-bolt.patch"
       patch_description: "Change date.h to better support int32_t days from epoch"
       patch_type: "portability"
+    - patch_file: "patches/3.0.4-bolt-check-tzdb.patch"
+      patch_description: "Throw error when timezone DB is missing"
+      patch_type: "bugfix"
   "3.0.1":
     - patch_file: "patches/cmake-3.0.1.patch"
       patch_description: "Disable string view to workaround clang 5 not having it"

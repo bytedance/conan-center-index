@@ -1,0 +1,18 @@
+diff --git a/src/tz.cpp b/src/tz.cpp
+index 15c9f5d..e24264d 100644
+--- a/src/tz.cpp
++++ b/src/tz.cpp
+@@ -3909,7 +3909,12 @@ reload_tzdb()
+ const tzdb&
+ get_tzdb()
+ {
+-    return get_tzdb_list().front();
++    const tzdb_list& db_list = get_tzdb_list();
++    if (db_list.begin() == db_list.end()) {
++        std::string msg = "Timezone database not found in get_tzdb().";
++        throw std::runtime_error(msg);
++    }
++    return db_list.front();
+ }
+ 
+ namespace {
