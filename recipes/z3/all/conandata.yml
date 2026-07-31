@@ -23,3 +23,8 @@ sources:
   "4.9.1":
     url: "https://github.com/Z3Prover/z3/archive/refs/tags/z3-4.9.1.tar.gz"
     sha256: "ca08ba933481242507b2f8b303c3ebdf5d16b0005d397fb45018321dc639a0d7"
+patches:
+  "4.13.0":
+    - patch_file: "patches/4.13.0-0001-cherry-pick-7235-7313.patch"
+      patch_description: "Fix compilation error, cherry pick 7335 7235"
+      patch_type: "portability"
