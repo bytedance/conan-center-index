@@ -1,0 +1,26 @@
+diff --git a/cpp/src/parquet/CMakeLists.txt b/cpp/src/parquet/CMakeLists.txt
+index 04028431b..fcf8f0f5f 100644
+--- a/cpp/src/parquet/CMakeLists.txt
++++ b/cpp/src/parquet/CMakeLists.txt
+@@ -228,6 +228,8 @@ if(ARROW_HAVE_RUNTIME_AVX2)
+ endif()
+ 
+ if(PARQUET_REQUIRE_ENCRYPTION)
++  list(APPEND PARQUET_SHARED_PRIVATE_LINK_LIBS ${ARROW_OPENSSL_LIBS})
++  list(APPEND PARQUET_STATIC_LINK_LIBS ${ARROW_OPENSSL_LIBS})
+   set(PARQUET_SRCS ${PARQUET_SRCS} encryption/encryption_internal.cc
+                    encryption/openssl_internal.cc)
+   # Encryption key management
+diff --git a/cpp/cmake_modules/FindSnappyAlt.cmake b/cpp/cmake_modules/FindSnappyAlt.cmake
+index 4d3134006..f5d58b240 100644
+--- a/cpp/cmake_modules/FindSnappyAlt.cmake
++++ b/cpp/cmake_modules/FindSnappyAlt.cmake
+@@ -42,7 +42,7 @@ if(Snappy_FOUND)
+     else()
+       # The Conan's Snappy package always uses Snappy::snappy and it's
+       # an INTERFACE_LIBRARY.
+-      get_target_property(Snappy Snappy::snappy TYPE)
++      get_target_property(Snappy_TYPE Snappy::snappy TYPE)
+       if(Snappy_TYPE STREQUAL "STATIC_LIBRARY" OR Snappy_TYPE STREQUAL
+                                                   "INTERFACE_LIBRARY")
+         set(Snappy_TARGET Snappy::snappy)
