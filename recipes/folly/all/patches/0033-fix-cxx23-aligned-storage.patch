@@ -1,0 +1,16 @@
+--- a/folly/Traits.h
++++ b/folly/Traits.h
+@@ -391,3 +391,12 @@
++namespace detail {
++template <std::size_t Len, std::size_t Align>
++struct aligned_storage {
++  struct type {
++    alignas(Align) unsigned char data[Len];
++  };
++};
++} // namespace detail
++
+ template <typename T>
+ using aligned_storage_for_t =
+-    typename std::aligned_storage<sizeof(T), alignof(T)>::type;
++    typename detail::aligned_storage<sizeof(T), alignof(T)>::type;
