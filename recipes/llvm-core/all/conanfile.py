@@ -171,6 +171,7 @@ class LLVMCoreConan(ConanFile):
         "with_xml2": [True, False],
         "with_z3": [True, False],
         "with_zstd": [True, False],
+        "with_clang": [True, False],
     }
     default_options = {
         "shared": False,
@@ -193,6 +194,7 @@ class LLVMCoreConan(ConanFile):
         "with_z3": True,
         "with_zlib": True,
         "with_zstd": True,
+        "with_clang": False,
     }
 
     @property
@@ -301,6 +303,8 @@ class LLVMCoreConan(ConanFile):
             # LLVM >=15 split up several components in its release, including cmake
             get(self, **sources["llvm"], destination='llvm-main', strip_root=True)
             get(self, **sources["cmake"], destination='cmake', strip_root=True)
+            if "clang" in sources:
+                get(self, **sources["clang"], destination='clang', strip_root=True)
 
     def _apply_resource_limits(self, cmake_definitions):
         if os.getenv("CONAN_CENTER_BUILD_SERVICE"):
@@ -373,6 +377,9 @@ class LLVMCoreConan(ConanFile):
         if self.options.targets != "all":
             cmake_variables["LLVM_TARGETS_TO_BUILD"] = self.options.targets
 
+        if self.options.with_clang:
+            cmake_variables["LLVM_ENABLE_PROJECTS"] = "clang"
+
         self._apply_resource_limits(cmake_variables)
 
         if is_msvc(self):
@@ -415,7 +422,9 @@ class LLVMCoreConan(ConanFile):
             "LLVMTableGenGlobalISel.*",
             "CONAN_LIB.*",
             "LLVMExegesis.*",
-            "LLVMCFIVerify.*"
+            "LLVMCFIVerify.*",
+            "clang.*",
+            "libclang.*",
         ]
         graphviz_options = textwrap.dedent(f"""
             set(GRAPHVIZ_EXECUTABLES OFF)
@@ -538,8 +547,9 @@ class LLVMCoreConan(ConanFile):
         if not self.options.shared:
             build_info = self._read_build_info()
             components = build_info["components"]
-
             for component_name, data in components.items():
+                if component_name in ["Remarks", "LTO"]:
+                    continue # libLTO.so and libRemarks.so should not be linked for static builds
                 self.cpp_info.components[component_name].set_property("cmake_target_name", component_name)
                 self.cpp_info.components[component_name].libs = [component_name]
                 self.cpp_info.components[component_name].requires = data["requires"]
