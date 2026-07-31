@@ -4,6 +4,7 @@ from conan import ConanFile
 from conan.errors import ConanInvalidConfiguration
 from conan.tools.apple import fix_apple_shared_install_name
 from conan.tools.build import cross_building
+from conan.tools.env import VirtualBuildEnv
 from conan.tools.files import get, rmdir, copy, rm, export_conandata_patches, apply_conandata_patches
 from conan.tools.gnu import AutotoolsToolchain, Autotools
 
@@ -41,6 +42,8 @@ class FlexConan(ConanFile):
 
     def build_requirements(self):
         self.tool_requires("m4/1.4.19")
+        self.tool_requires("gettext/0.22.5")
+        self.tool_requires("libtool/2.4.7")
         if hasattr(self, "settings_build") and cross_building(self):
             self.tool_requires(f"{self.name}/{self.version}")
 
@@ -57,6 +60,7 @@ class FlexConan(ConanFile):
         self.settings.rm_safe("compiler.cppstd")
 
     def generate(self):
+        VirtualBuildEnv(self).generate()
         at = AutotoolsToolchain(self)
         at.configure_args.extend([
             "--disable-nls",
@@ -72,6 +76,7 @@ class FlexConan(ConanFile):
 
     def build(self):
         apply_conandata_patches(self)
+        self.run("autoreconf -i --force", env="conanbuild")
         autotools = Autotools(self)
         autotools.configure()
         autotools.make()
