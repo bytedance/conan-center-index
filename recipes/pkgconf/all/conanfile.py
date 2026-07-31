@@ -69,8 +69,8 @@ class PkgConfConan(ConanFile):
                                   "'-DLIBPKGCONF_EXPORT'",
                                   "'-DPKGCONFIG_IS_STATIC'")
             replace_in_file(self, os.path.join(self.source_folder, "meson.build"),
-            "project('pkgconf', 'c',",
-            "project('pkgconf', 'c',\ndefault_options : ['c_std=gnu99'],")
+                "default_options : ['c_std=c99'],",
+                "default_options : ['c_std=gnu99'],")
 
     def generate(self):
         env = VirtualBuildEnv(self)
