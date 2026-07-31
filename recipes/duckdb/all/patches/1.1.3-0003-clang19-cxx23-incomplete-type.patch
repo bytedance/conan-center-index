@@ -1,0 +1,26 @@
+diff --git a/src/include/duckdb/parser/statement/select_statement.hpp b/src/include/duckdb/parser/statement/select_statement.hpp
+--- a/src/include/duckdb/parser/statement/select_statement.hpp
++++ b/src/include/duckdb/parser/statement/select_statement.hpp
+@@ -26,8 +26,7 @@ public:
+ 	static constexpr const StatementType TYPE = StatementType::SELECT_STATEMENT;
+ 
+ public:
+-	SelectStatement() : SQLStatement(StatementType::SELECT_STATEMENT) {
+-	}
++	SelectStatement();
+ 
+ 	//! The main query node
+ 	unique_ptr<QueryNode> node;
+diff --git a/src/parser/statement/select_statement.cpp b/src/parser/statement/select_statement.cpp
+--- a/src/parser/statement/select_statement.cpp
++++ b/src/parser/statement/select_statement.cpp
+@@ -5,6 +5,9 @@
+ 
+ namespace duckdb {
+ 
++SelectStatement::SelectStatement() : SQLStatement(StatementType::SELECT_STATEMENT) {
++}
++
+ SelectStatement::SelectStatement(const SelectStatement &other) : SQLStatement(other), node(other.node->Copy()) {
+ }
+ 
