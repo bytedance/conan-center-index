@@ -113,6 +113,8 @@ class CMakeConan(ConanFile):
                 if self.options.with_openssl:
                     openssl = self.dependencies["openssl"]
                     tc.variables["OPENSSL_USE_STATIC_LIBS"] = not openssl.options.shared
+            if "zlib" in self.dependencies.host:
+                tc.variables["CMAKE_USE_SYSTEM_ZLIB"] = True
             if cross_building(self):
                 tc.variables["HAVE_POLL_FINE_EXITCODE"] = ''
                 tc.variables["HAVE_POLL_FINE_EXITCODE__TRYRUN_OUTPUT"] = ''
