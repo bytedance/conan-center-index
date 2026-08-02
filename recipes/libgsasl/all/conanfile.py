@@ -23,8 +23,9 @@ class LibgsaslConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     options = {
         "shared": [True, False],
+        "fPIC": [True, False],
     }
-    default_options = {"shared": False}
+    default_options = {"shared": False, "fPIC": True}
     requires = ("libiconv/1.17",
                 "libidn/1.36"
                 )
@@ -84,4 +85,3 @@ class LibgsaslConan(ConanFile):
     def package_info(self):
         self.cpp_info.set_property("pkg_config_name", "gsasl")
         self.cpp_info.libs = ["gsasl"]
-
