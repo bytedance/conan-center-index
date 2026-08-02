@@ -4,7 +4,7 @@ from conan import ConanFile
 from conan.errors import ConanInvalidConfiguration
 from conan.tools.apple import fix_apple_shared_install_name
 from conan.tools.env import VirtualBuildEnv
-from conan.tools.files import chdir, copy, get, replace_in_file
+from conan.tools.files import chdir, copy, get, replace_in_file, apply_conandata_patches, export_conandata_patches
 from conan.tools.gnu import Autotools, AutotoolsToolchain
 from conan.tools.layout import basic_layout
 from conan.tools.microsoft import is_msvc, NMakeToolchain
@@ -24,15 +24,20 @@ class LibisalConan(ConanFile):
     options = {
         "shared": [True, False],
         "fPIC": [True, False],
+        "with_prefix": [True, False],
     }
     default_options = {
         "shared": False,
         "fPIC": True,
+        "with_prefix": True,
     }
 
     @property
     def _settings_build(self):
         return getattr(self, "settings_build", self.settings)
+
+    def export_sources(self):
+        export_conandata_patches(self)
 
     def config_options(self):
         if self.settings.os == "Windows":
@@ -46,12 +51,6 @@ class LibisalConan(ConanFile):
 
     def layout(self):
         basic_layout(self, src_folder="src")
-
-    def validate(self):
-        if self.settings.arch not in ["x86", "x86_64"]:
-            raise ConanInvalidConfiguration(f"{self.settings.arch} architecture is not supported")
-        if self.version == "2.30.0" and self._settings_build.arch == "armv8":
-            raise ConanInvalidConfiguration(f"Version {self.version} does not support armv8")
 
     def build_requirements(self):
         self.tool_requires("nasm/2.15.05")
@@ -76,9 +75,11 @@ class LibisalConan(ConanFile):
             # ./configure bugs out if $AS executable has an absolute path
             env = tc.environment()
             env.define("AS", "nasm")
+            tc.configure_args.append("--enable-prefix" if self.options.with_prefix else "")
             tc.generate(env)
 
     def build(self):
+        apply_conandata_patches(self)
         with chdir(self, self.source_folder):
             if is_msvc(self):
                 replace_in_file(self, "Makefile.nmake",

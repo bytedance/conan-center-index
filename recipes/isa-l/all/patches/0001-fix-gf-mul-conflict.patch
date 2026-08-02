@@ -1,0 +1,51 @@
+diff --git a/configure.ac b/configure.ac
+index 8ca75ca..61e3725 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -67,6 +67,13 @@ AS_IF([test "x$enable_debug" = "xyes"], [
+         AC_DEFINE(ENABLE_DEBUG, [1], [Debug messages.])
+ ])
+ 
++AC_ARG_ENABLE([prefix],
++        AS_HELP_STRING([--enable-prefix], [enable symbol prefix @<:@default=disabled@:>@]),
++        [], [enable_prefix=no])
++AS_IF([test "x$enable_prefix" = "xyes"], [
++        AC_DEFINE(ISAL_SYMBOL_PREFIX, [1], [Add symbol prefix to avoid symbol conflict.])
++])
++
+ # If this build is for x86, look for yasm and nasm
+ if test x"$is_x86" = x"yes"; then
+   AC_MSG_CHECKING([whether Intel CET is enabled])
+diff --git a/erasure_code/ec_base.c b/erasure_code/ec_base.c
+index 9d76c8d..b0cd89d 100644
+--- a/erasure_code/ec_base.c
++++ b/erasure_code/ec_base.c
+@@ -44,7 +44,11 @@ void ec_init_tables(int k, int rows, unsigned char *a, unsigned char *g_tbls)
+ 	}
+ }
+ 
++#ifdef ISAL_SYMBOL_PREFIX
++unsigned char isal_gf_mul(unsigned char a, unsigned char b)
++#else
+ unsigned char gf_mul(unsigned char a, unsigned char b)
++#endif
+ {
+ #ifndef GF_LARGE_TABLES
+ 	int i;
+diff --git a/include/erasure_code.h b/include/erasure_code.h
+index 2f9a257..1277ac3 100644
+--- a/include/erasure_code.h
++++ b/include/erasure_code.h
+@@ -871,7 +871,12 @@ void gf_6vect_mad_avx2(int len, int vec, int vec_i, unsigned char *gftbls, unsig
+  * @returns  Product of a and b in GF(2^8)
+  */
+ 
++#ifdef ISAL_SYMBOL_PREFIX
++#define gf_mul isal_gf_mul
++unsigned char isal_gf_mul(unsigned char a, unsigned char b);
++#else
+ unsigned char gf_mul(unsigned char a, unsigned char b);
++#endif
+ 
+ /**
+  * @brief Single element GF(2^8) inverse.
