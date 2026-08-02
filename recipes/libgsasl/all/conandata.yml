@@ -1,0 +1,12 @@
+sources:
+  "1.8.0":
+    url:
+      - "https://mirrors.kernel.org/gnu/gsasl/libgsasl-1.8.0.tar.gz"
+      - "http://ftp.gnu.org/gnu/gsasl/libgsasl-1.8.0.tar.gz"
+      - "https://mirrors.aliyun.com/gnu/gsasl/libgsasl-1.8.0.tar.gz"
+    md5: "5dbdf859f6e60e05813370e2b193b92b"
+patches:
+  "1.8.0":
+    - patch_file: "patches/0000-fix-configure-error.patch"
+      patch_description: "fix CMakelists.txt for conan"
+      patch_type: "conan"
