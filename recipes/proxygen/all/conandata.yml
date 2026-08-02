@@ -1,0 +1,9 @@
+sources:
+  "2022.10.31.00":
+    url: "https://github.com/facebook/proxygen/releases/download/v2022.10.31.00/proxygen-v2022.10.31.00.tar.gz"
+    sha256: "f900841376830285f67e9af0057d035d6d18b89e8148be24bb7f8f16d974ecae"
+patches:
+  "2022.10.31.00":
+    - patch_file: "patches/0001-find-packages.patch"
+      patch_description: "fix find_package"
+      patch_type: "conan"

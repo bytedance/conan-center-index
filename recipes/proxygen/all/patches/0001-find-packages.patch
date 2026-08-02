@@ -1,0 +1,81 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index ea22eabe1..31de47c44 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -72,13 +72,13 @@ find_package(wangle REQUIRED)
+ if (BUILD_QUIC)
+   find_package(mvfst REQUIRED)
+ else()
+- find_package(Fizz REQUIRED)
++ find_package(fizz REQUIRED)
+ endif()
+-find_package(Zstd REQUIRED)
++find_package(zstd REQUIRED)
+ find_package(ZLIB REQUIRED)
+ find_package(OpenSSL REQUIRED)
+ find_package(Threads)
+-find_package(Boost 1.58 REQUIRED
++find_package(Boost  REQUIRED
+   COMPONENTS
+     iostreams
+     context
+@@ -140,8 +140,8 @@ if (gflags_FOUND)
+     message(FATAL_ERROR
+             "Unable to determine the target name for the GFlags package.")
+   endif()
+-  list(APPEND CMAKE_REQUIRED_LIBRARIES ${GFLAGS_LIBRARIES})
+-  list(APPEND CMAKE_REQUIRED_INCLUDES ${GFLAGS_INCLUDE_DIR})
++  list(APPEND CMAKE_REQUIRED_LIBRARIES ${gflags_LIBRARIES})
++  list(APPEND CMAKE_REQUIRED_INCLUDES ${gflags_INCLUDE_DIR})
+ else()
+   find_package(Gflags REQUIRED MODULE)
+   list(APPEND PROXYGEN_EXTRA_LINK_LIBRARIES ${LIBGFLAGS_LIBRARY})
+@@ -152,6 +152,7 @@ endif()
+ 
+ include(ProxygenTest)
+ 
++
+ add_subdirectory(proxygen)
+ 
+ if (NOT DEFINED LIB_INSTALL_DIR)
+diff --git a/proxygen/httpserver/samples/echo/EchoHandler.h b/proxygen/httpserver/samples/echo/EchoHandler.h
+index 855b33097..b2b147eb5 100644
+--- a/proxygen/httpserver/samples/echo/EchoHandler.h
++++ b/proxygen/httpserver/samples/echo/EchoHandler.h
+@@ -10,6 +10,7 @@
+ 
+ #include <folly/Memory.h>
+ #include <proxygen/httpserver/RequestHandler.h>
++#include <gflags/gflags.h>
+ 
+ namespace proxygen {
+ class ResponseHandler;
+diff --git a/proxygen/lib/CMakeLists.txt b/proxygen/lib/CMakeLists.txt
+index 90aacef35..5be6724d7 100644
+--- a/proxygen/lib/CMakeLists.txt
++++ b/proxygen/lib/CMakeLists.txt
+@@ -233,10 +233,10 @@ endif()
+ 
+ target_link_libraries(
+     proxygen PUBLIC
+-    Folly::folly
+     fizz::fizz
+     wangle::wangle
+-    zstd
++    zstd::libzstd_static
++    Folly::folly
+     Boost::boost
+     Boost::iostreams
+     -lz
+diff --git a/proxygen/lib/services/WorkerThread.cpp b/proxygen/lib/services/WorkerThread.cpp
+index 99ecc49b4..09499b636 100644
+--- a/proxygen/lib/services/WorkerThread.cpp
++++ b/proxygen/lib/services/WorkerThread.cpp
+@@ -15,6 +15,7 @@
+ #include <folly/experimental/io/IoUringBackend.h>
+ #include <folly/io/async/EventBaseManager.h>
+ #include <glog/logging.h>
++#include <gflags/gflags.h>
+ #include <signal.h>
+ 
+ #if !FOLLY_MOBILE && __has_include(<liburing.h>)
