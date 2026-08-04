@@ -93,6 +93,10 @@ patches:
     - patch_file: "patches/15.0.0-0004-dataset_cmakelists.patch"
       patch_description: "dataset CMakeLists.txt change"
       patch_type: "conan"
+    - patch_file: "patches/15.0.1-0005-cxx23-aligned-storage.patch"
+      patch_description: "replace deprecated std::aligned_storage for C++23 compatibility"
+      patch_type: "backport"
+      patch_source: "https://github.com/apache/arrow/commit/51d380cfe6546bc656935047b6b17b4f5d190448"
   "15.0.0":
     - patch_file: "patches/11.0.0-0001-fix-cmake.patch"
       patch_description: "use cci package"

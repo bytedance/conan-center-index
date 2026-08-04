@@ -25,6 +25,11 @@ patches:
       patch_description: fix references to third party libs to match conan variables and targets
       patch_type: conan
       base_path: llvm-main
+    - patch_file: patches/19x/0001-fix-register-ref-comparators.patch
+      patch_description: replace invalid std comparator specializations
+      patch_type: backport
+      patch_source: https://github.com/llvm/llvm-project/commit/a558d656043734cc4d02e0a0a12e4c308c28f8c7
+      base_path: llvm-main
   "13.0.0":
     - patch_file: patches/13x/0000-cmake-dependencies.patch
       patch_description: fix references to third party libs to match conan variables and targets
