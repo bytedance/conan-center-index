@@ -131,6 +131,10 @@ class CMakeConan(ConanFile):
 
 
     def build(self):
+        replace_in_file(self,
+                        os.path.join(self.source_folder, "Utilities", "cmlibarchive", "CMakeLists.txt"),
+                        "FIND_PACKAGE(OpenSSL)",
+                        "FIND_PACKAGE(OpenSSL MODULE REQUIRED)")
         if self.options.bootstrap:
             toolchain_file_content = json.loads(load(self, os.path.join(self.generators_folder, "bootstrap_args")))
             bootstrap_cmake_options = toolchain_file_content.get("bootstrap_cmake_options")
