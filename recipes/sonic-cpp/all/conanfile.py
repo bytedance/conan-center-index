@@ -80,7 +80,7 @@ class SonicCppConan(ConanFile):
             raise ConanInvalidConfiguration(f"{self.ref} doesn't support MSVC now.")
 
     def source(self):
-        sonic_version_pattern = r"0\.\d\.\d+"
+        sonic_version_pattern = r"^0\.\d\.\d+"
         if re.findall(sonic_version_pattern, self.version):
             git = scm.Git(self, folder="..")
             git.clone(self.conan_data["sources"][self.version]["url"], target="src")
