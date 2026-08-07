@@ -1,5 +1,5 @@
 from conan import ConanFile
-from conan.tools.files import chdir, copy, rmdir, get, save, load
+from conan.tools.files import chdir, copy, rmdir, get, save, load, replace_in_file
 from conan.tools.cmake import CMake, CMakeToolchain, cmake_layout, CMakeDeps
 from conan.tools.gnu import Autotools, AutotoolsToolchain, AutotoolsDeps
 from conan.tools.layout import basic_layout
