@@ -1,0 +1,29 @@
+diff --git a/src/paimon/common/logging/logging.cpp b/src/paimon/common/logging/logging.cpp
+index 5892436..3866639 100644
+--- a/src/paimon/common/logging/logging.cpp
++++ b/src/paimon/common/logging/logging.cpp
+@@ -22,6 +22,12 @@
+ #include <optional>
+ #include <shared_mutex>
+ 
++#ifdef __APPLE__
++#include <stdlib.h>
++#else
++#include <errno.h>
++#endif
++
+ #include "glog/log_severity.h"
+ #include "glog/logging.h"
+ #include "glog/raw_logging.h"
+@@ -83,7 +89,11 @@ std::unique_ptr<Logger> Logger::GetLogger(const std::string& path) {
+     }
+     std::unique_lock<std::shared_mutex> ulock(getRegistryLock());
+     if (!google::IsGoogleLoggingInitialized()) {
++        #ifdef __APPLE__
++        google::InitGoogleLogging(getprogname());
++#else
+         google::InitGoogleLogging(program_invocation_name);
++#endif  // __APPLE__
+     }
+     return std::make_unique<GlogAdaptor>();
+ }
