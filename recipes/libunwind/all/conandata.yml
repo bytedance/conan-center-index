@@ -1,4 +1,7 @@
 sources:
+  "1.8.4-bolt":
+    url: "https://github.com/libunwind/libunwind/archive/832daadf7a6d95fca090014bc78ad738eb847b45.zip"
+    sha256: "e97cefadd950c741ffd2a0f4159e71921d6a6f783de81efa3b544593a4a89caf"
   "1.8.3":
     url: "https://github.com/libunwind/libunwind/releases/download/v1.8.3/libunwind-1.8.3.tar.gz"
     sha256: "be30d910e67f58d82e753231f1357f326a1a088acf126b21ff77e60aab19b90b"

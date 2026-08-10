@@ -1,7 +1,7 @@
 from conan import ConanFile
 from conan.errors import ConanInvalidConfiguration
 from conan.tools.build import cross_building
-from conan.tools.env import VirtualRunEnv
+from conan.tools.env import VirtualBuildEnv, VirtualRunEnv
 from conan.tools.files import (
     apply_conandata_patches,
     copy,
@@ -65,6 +65,10 @@ class LiunwindConan(ConanFile):
         if self.options.zlibdebuginfo:
             self.requires("zlib/[>=1.2.11 <2]")
 
+    def build_requirements(self):
+        if self.version == "1.8.4-bolt":
+            self.tool_requires("libtool/2.4.7")
+
     def validate(self):
         if self.settings.os not in ["Linux", "FreeBSD"]:
             raise ConanInvalidConfiguration(
@@ -75,6 +79,8 @@ class LiunwindConan(ConanFile):
         get(self, **self.conan_data["sources"][self.version], strip_root=True)
 
     def generate(self):
+        VirtualBuildEnv(self).generate()
+
         if not cross_building(self):
             env = VirtualRunEnv(self)
             env.generate(scope="build")
@@ -100,6 +106,8 @@ class LiunwindConan(ConanFile):
     def build(self):
         apply_conandata_patches(self)
         autotools = Autotools(self)
+        if not os.path.exists(os.path.join(self.source_folder, "configure")):
+            autotools.autoreconf()
         autotools.configure()
         autotools.make()
 
