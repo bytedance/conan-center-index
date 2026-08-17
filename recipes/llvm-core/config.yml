@@ -1,4 +1,6 @@
 versions:
+  "22.1.2":
+    folder: all
   "19.1.7-bolt":
     folder: all
   "13.0.0":

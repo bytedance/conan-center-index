@@ -299,6 +299,9 @@ class LLVMCoreConan(ConanFile):
         sources = self.conan_data["sources"][self.version]
         if Version(self.version) < 15:
             get(self, **sources, strip_root=True)
+        elif "project" in sources:
+            get(self, **sources["project"], strip_root=True)
+            rename(self, os.path.join(self.source_folder, "llvm"), os.path.join(self.source_folder, "llvm-main"))
         else:
             # LLVM >=15 split up several components in its release, including cmake
             get(self, **sources["llvm"], destination='llvm-main', strip_root=True)
@@ -330,6 +333,8 @@ class LLVMCoreConan(ConanFile):
     @property
     def _all_targets(self):
         targets = LLVM_TARGETS if Version(self.version) >= 14 else LLVM_TARGETS - {"LoongArch", "VE"}
+        if Version(self.version) >= 22:
+            targets = targets | {"SPIRV"}
         return ";".join(targets)
 
     def generate(self):
