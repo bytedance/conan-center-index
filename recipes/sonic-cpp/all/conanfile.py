@@ -26,6 +26,7 @@ from conan.tools.microsoft import is_msvc
 from conan.tools import scm
 import os
 import re
+import shutil
 
 required_conan_version = ">=1.53.0"
 
@@ -80,6 +81,16 @@ class SonicCppConan(ConanFile):
             raise ConanInvalidConfiguration(f"{self.ref} doesn't support MSVC now.")
 
     def source(self):
+        source_data = self.conan_data["sources"][self.version]
+        if "path" in source_data:
+            shutil.copytree(
+                source_data["path"],
+                self.source_folder,
+                dirs_exist_ok=True,
+                ignore=shutil.ignore_patterns(".git", "build*"),
+            )
+            return
+
         sonic_version_pattern = r"^0\.\d\.\d+"
         if re.findall(sonic_version_pattern, self.version):
             git = scm.Git(self, folder="..")
