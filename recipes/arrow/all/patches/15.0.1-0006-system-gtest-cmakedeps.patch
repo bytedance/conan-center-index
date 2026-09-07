@@ -1,0 +1,18 @@
+diff --git a/cpp/cmake_modules/ThirdpartyToolchain.cmake b/cpp/cmake_modules/ThirdpartyToolchain.cmake
+--- a/cpp/cmake_modules/ThirdpartyToolchain.cmake
++++ b/cpp/cmake_modules/ThirdpartyToolchain.cmake
+@@ -2236,10 +2236,12 @@ if(ARROW_TESTING)
+     else()
+       string(APPEND ARROW_TESTING_PC_CFLAGS " -I$<JOIN:")
+       string(APPEND ARROW_TESTING_PC_CFLAGS
+              "$<TARGET_PROPERTY:GTest::gtest,INTERFACE_INCLUDE_DIRECTORIES>")
+       string(APPEND ARROW_TESTING_PC_CFLAGS ",-I>")
+-
+-      string(APPEND ARROW_TESTING_PC_LIBS " $<TARGET_FILE:GTest::gtest>")
++      get_target_property(GTEST_TARGET_TYPE GTest::gtest TYPE)
++      if(NOT GTEST_TARGET_TYPE STREQUAL "INTERFACE_LIBRARY")
++        string(APPEND ARROW_TESTING_PC_LIBS " $<TARGET_FILE:GTest::gtest>")
++      endif()
+     endif()
+     set(ARROW_GTEST_GMOCK GTest::gmock)
+     set(ARROW_GTEST_GTEST GTest::gtest)

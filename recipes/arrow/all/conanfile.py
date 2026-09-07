@@ -359,7 +359,7 @@ class ArrowConan(ConanFile):
         if self.options.with_backtrace:
             self.requires("libbacktrace/cci.20210118")
         if self._with_test():
-            self.requires("gtest/1.10.0", override=True)
+            self.requires("gtest/1.10.0")
 
     def validate(self):
         # validate options with 'auto' as default value
@@ -519,7 +519,8 @@ class ArrowConan(ConanFile):
         tc.variables["ARROW_PYTHON"] = bool(self.options.with_pyarrow)
         if self._with_test():
             tc.variables["ARROW_TESTING"] = "ON"
-            tc.variables["GTest_SOURCE"] = "BUNDLED"
+            tc.variables["GTest_SOURCE"] = "SYSTEM"
+            tc.cache_variables["CMAKE_TRY_COMPILE_CONFIGURATION"] = str(self.settings.build_type)
 
         tc.cache_variables["CMAKE_PROJECT_arrow_INCLUDE"] = os.path.join(self.source_folder, "conan_cmake_project_include.cmake")
         tc.generate()
@@ -709,7 +710,7 @@ class ArrowConan(ConanFile):
         if self._with_test():
             self.cpp_info.components["libarrow_testing"].set_property("pkg_config_name", "arrow_testing")
             self.cpp_info.components["libarrow_testing"].libs = [f"arrow_testing"]
-            self.cpp_info.components["libarrow_testing"].requires = ["libarrow"]
+            self.cpp_info.components["libarrow_testing"].requires = ["libarrow", "gtest::gtest"]
 
         # TODO: to remove in conan v2
         
