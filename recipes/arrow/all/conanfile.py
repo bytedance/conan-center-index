@@ -560,6 +560,14 @@ class ArrowConan(ConanFile):
         copy(self, pattern="NOTICE.txt", dst=os.path.join(self.package_folder, "licenses"), src=self.source_folder)
         cmake =CMake(self)
         cmake.install()
+        if self.options.get_safe("substrait"):
+            copy(
+                self,
+                pattern="libsubstrait*",
+                dst=os.path.join(self.package_folder, "lib"),
+                src=os.path.join(self.build_folder, "release"),
+                keep_path=False,
+            )
 
         rmdir(self, os.path.join(self.package_folder, "lib", "cmake"))
         rmdir(self, os.path.join(self.package_folder, "lib", "pkgconfig"))
@@ -587,9 +595,11 @@ class ArrowConan(ConanFile):
                 self.cpp_info.components["libparquet"].defines = ["PARQUET_STATIC"]
 
         if self.options.get_safe("substrait"):
+            self.cpp_info.components["substrait"].libs = [f"substrait{suffix}"]
+            self.cpp_info.components["substrait"].requires = ["protobuf::protobuf"]
             self.cpp_info.components["libarrow_substrait"].set_property("pkg_config_name", "arrow_substrait")
             self.cpp_info.components["libarrow_substrait"].libs = [f"arrow_substrait{suffix}"]
-            self.cpp_info.components["libarrow_substrait"].requires = ["libparquet", "dataset"]
+            self.cpp_info.components["libarrow_substrait"].requires = ["libparquet", "dataset", "substrait"]
 
         # Plasma was deprecated in Arrow 12.0.0
         del self.options.plasma
@@ -710,6 +720,8 @@ class ArrowConan(ConanFile):
             self.cpp_info.components["libparquet"].names["cmake_find_package"] = "parquet"
             self.cpp_info.components["libparquet"].names["cmake_find_package_multi"] = "parquet"
         if self.options.get_safe("substrait"):
+            self.cpp_info.components["substrait"].names["cmake_find_package"] = "substrait"
+            self.cpp_info.components["substrait"].names["cmake_find_package_multi"] = "substrait"
             self.cpp_info.components["libarrow_substrait"].names["cmake_find_package"] = "arrow_substrait"
             self.cpp_info.components["libarrow_substrait"].names["cmake_find_package_multi"] = "arrow_substrait"
         if self.options.gandiva:
