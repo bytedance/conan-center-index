@@ -1,0 +1,11 @@
+diff --git a/googletest/src/gtest-death-test.cc b/googletest/src/gtest-death-test.cc
+--- a/googletest/src/gtest-death-test.cc
++++ b/googletest/src/gtest-death-test.cc
+@@ -52,6 +52,7 @@
+ # endif  // GTEST_OS_LINUX
+ 
+ # include <stdarg.h>
++# include <stdint.h>
+ 
+ # if GTEST_OS_WINDOWS
+ #  include <windows.h>
