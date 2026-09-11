@@ -14,8 +14,7 @@
 
 from conan import ConanFile
 from conan.tools.cmake import CMake, CMakeDeps, CMakeToolchain, cmake_layout
-from conan.tools.files import apply_conandata_patches, copy, export_conandata_patches
-from conan.tools import scm
+from conan.tools.files import apply_conandata_patches, copy, export_conandata_patches, get
 from conan.tools.env import VirtualBuildEnv, VirtualRunEnv
 from conan.tools.microsoft import is_msvc
 
@@ -28,12 +27,7 @@ class RyuConan(ConanFile):
     homepage = "https://github.com/ulfjack/ryu.git"
 
     def source(self):
-        git = scm.Git(self, folder="..")
-        git.clone("https://github.com/ulfjack/ryu.git", target="src")
-        git = scm.Git(self, folder=self.source_folder)
-        # no release tag, use master
-        commit = "1264a94"
-        git.checkout(commit)
+        get(self, **self.conan_data["sources"][self.version], strip_root=True)
         apply_conandata_patches(self)
 
     def export_sources(self):
