@@ -1574,6 +1574,8 @@ class BoostConan(ConanFile):
                 contents += f" -arch {to_apple_arch(self)}"
 
         contents += " : \n"
+        if self.settings.os == "Linux" and self.settings.compiler == "clang" and not cross_building(self):
+            contents += "<triple>none "
         if self._ar:
             ar_path = self._ar.replace("\\", "/")
             contents += f'<archiver>"{ar_path}" '

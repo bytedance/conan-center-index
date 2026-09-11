@@ -66,7 +66,6 @@ if(NOT HEADER_ONLY)
         find_package(Boost COMPONENTS json REQUIRED)
         add_executable(json_exe json.cpp)
         target_link_libraries(json_exe PRIVATE Boost::json)
-        set_property(TARGET json_exe PROPERTY CXX_STANDARD 11)
         add_test(NAME boost_json COMMAND json_exe)
     endif()
 
