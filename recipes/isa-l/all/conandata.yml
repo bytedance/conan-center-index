@@ -1,8 +1,13 @@
 sources:
+  "2.32.1":
+    url: "https://github.com/intel/isa-l/archive/refs/tags/v2.32.1.zip"
+    sha256: "4dd1b4cad227fd635179a8eca33da821be0e8a1aefcacd5bd1f20015484892e2"
   "2.30.0":
-    url: "https://github.com/intel/isa-l/archive/refs/tags/v2.30.0.tar.gz"
-    sha256: "bcf592c04fdfa19e723d2adf53d3e0f4efd5b956bb618fed54a1108d76a6eb56"
+    url: "https://github.com/intel/isa-l/archive/refs/tags/v2.30.0.zip"
+    sha256: "4f3dd47aaf488fc65f2c916abe480d4d55c6e1a08acedcc57ab7b5375bbd10b0"
 patches:
+  "2.32.1":
+    - patch_file: "patches/0002-fix-gf-mul-conflict-2.32.1.patch"
   "2.30.0":
     - patch_file: "patches/0001-fix-gf-mul-conflict.patch"
 
