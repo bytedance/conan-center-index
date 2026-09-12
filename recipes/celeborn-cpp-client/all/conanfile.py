@@ -14,9 +14,8 @@
 
 from conan import ConanFile
 from conan.tools.cmake import CMake, CMakeDeps, CMakeToolchain, cmake_layout
-from conan.tools.files import apply_conandata_patches, export_conandata_patches, copy
+from conan.tools.files import apply_conandata_patches, export_conandata_patches, copy, get
 from conan.tools.env import VirtualBuildEnv, VirtualRunEnv
-from conan.tools.scm import Git
 import os
 
 
@@ -59,10 +58,7 @@ class CelebornCppClientConan(ConanFile):
         self.tool_requires("protobuf/3.21.4")
 
     def source(self):
-        git = Git(self, folder="..")
-        git.clone("https://github.com/apache/celeborn", target="src")
-        git = Git(self, folder=self.source_folder)
-        git.checkout("81d89f3")
+        get(self, **self.conan_data["sources"][self.version], strip_root=True)
         apply_conandata_patches(self)
 
     def export_sources(self):
