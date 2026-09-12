@@ -56,7 +56,7 @@ class FizzConan(ConanFile):
         self.requires(
             "folly/2022.10.31.00", transitive_headers=True, transitive_libs=True
         )
-        self.requires("fmt/8.0.1", transitive_headers=True, transitive_libs=True)
+        self.requires("fmt/9.0.0", transitive_headers=True, transitive_libs=True)
         self.requires("openssl/1.1.1w")
         self.requires("glog/0.7.1", transitive_headers=True, transitive_libs=True)
         self.requires("gflags/2.2.2")

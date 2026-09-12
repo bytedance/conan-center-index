@@ -54,7 +54,7 @@ class FollyConan(ConanFile):
     def export_sources(self):
         export_conandata_patches(self)
         copy(self, "conan_deps.cmake", self.recipe_folder, os.path.join(self.export_sources_folder, "src"))
-        
+
 
     def config_options(self):
         if self.settings.os == "Windows":
@@ -93,7 +93,7 @@ class FollyConan(ConanFile):
         if self.settings.os == "Linux":
             self.requires("liburing/2.6", transitive_headers=True, transitive_libs=True)
 
-        self.requires("fmt/8.0.1", transitive_headers=True, transitive_libs=True)
+        self.requires("fmt/9.0.0", transitive_headers=True, transitive_libs=True)
         # if Version(self.version) == "2022.01.31.00":
         #     self.requires("fmt/8.0.1", transitive_headers=True, transitive_libs=True)
         # else:
