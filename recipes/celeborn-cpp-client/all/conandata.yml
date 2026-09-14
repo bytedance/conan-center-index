@@ -14,7 +14,7 @@
 
 sources:
   "main-20251212":
-    url: "https://github.com/apache/celeborn/archive/81d89f3.zip"
+    url: "https://github.com/apache/celeborn/archive/81d89f3ecac24fe22b29a2965a740c8bf93ce186.zip"
     sha256: "8b0ce482d37edf7f5d66b75644d06006b9b3f8d5a21f6034e33817864bff2ba6"
 patches:
   "main-20251212":
