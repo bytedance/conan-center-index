@@ -17,6 +17,7 @@ from conan.tools.cmake import CMake, CMakeDeps, CMakeToolchain, cmake_layout
 from conan.tools.files import apply_conandata_patches, export_conandata_patches, copy, get
 from conan.tools.env import VirtualBuildEnv, VirtualRunEnv
 import os
+import shutil
 
 
 required_conan_version = ">=1.54.0"
@@ -59,6 +60,23 @@ class CelebornCppClientConan(ConanFile):
 
     def source(self):
         get(self, **self.conan_data["sources"][self.version], strip_root=True)
+
+        proto_file = os.path.join(
+            self.source_folder, "cpp", "celeborn", "proto", "TransportMessagesCpp.proto"
+        )
+        with open(proto_file, encoding="utf-8") as file:
+            proto_file_content = file.read().strip()
+        if proto_file_content == "../../../common/src/main/proto/TransportMessages.proto":
+            real_proto_file = os.path.join(
+                self.source_folder,
+                "common",
+                "src",
+                "main",
+                "proto",
+                "TransportMessages.proto",
+            )
+            shutil.copyfile(real_proto_file, proto_file)
+
         apply_conandata_patches(self)
 
     def export_sources(self):
