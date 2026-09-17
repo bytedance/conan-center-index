@@ -1,0 +1,11 @@
+--- a/configure.ac
++++ b/configure.ac
+@@ -231,7 +231,7 @@
+     fi
+ 
+     if test x"$as_feature_level" = x"1"; then
+-      AC_LANG_CONFTEST([AC_LANG_SOURCE([[vpcompressb zmm0, k1, zmm1;]])])
++      AC_LANG_CONFTEST([AC_LANG_SOURCE([[vpcompressb zmm0 {k1}, zmm1;]])])
+       sed -i -e '/vpcompressb/!d' conftest.c
+       if $AS -f elf64  conftest.c 2> /dev/null; then
+         AC_MSG_RESULT([yes])

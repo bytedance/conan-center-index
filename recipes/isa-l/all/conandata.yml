@@ -8,6 +8,8 @@ sources:
 patches:
   "2.32.1":
     - patch_file: "patches/0002-fix-gf-mul-conflict-2.32.1.patch"
+    - patch_file: "patches/0003-fix-nasm-feature-check-2.32.1.patch"
+      patch_description: "Fix NASM feature detection when AS is explicitly set"
+      patch_type: "bugfix"
   "2.30.0":
     - patch_file: "patches/0001-fix-gf-mul-conflict.patch"
-

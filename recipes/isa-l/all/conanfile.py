@@ -86,6 +86,10 @@ class LibisalConan(ConanFile):
                                 " static" if self.options.shared else " dll", "")
                 self.run("nmake /f Makefile.nmake")
             else:
+                if self.version == "2.32.1":
+                    # ZIP sources do not preserve this script's executable permission.
+                    nasm_filter = os.path.join(self.source_folder, "tools", "nasm-filter.sh")
+                    os.chmod(nasm_filter, os.stat(nasm_filter).st_mode | 0o111)
                 autotools = Autotools(self)
                 autotools.autoreconf()
                 autotools.configure()
