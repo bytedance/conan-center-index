@@ -29,3 +29,6 @@ patches:
       patch_description: "Fix Range with libc++ 19 and later"
       patch_type: "backport"
     - patch_file: "patches/0033-fix-cxx23-aligned-storage.patch"
+    - patch_file: "patches/0034-fix-cmake4.patch"
+      patch_description: "Update CMake policy compatibility for CMake 4"
+      patch_type: "portability"
