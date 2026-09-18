@@ -81,6 +81,8 @@ class BenchmarkConan(ConanFile):
 
     def generate(self):
         tc = CMakeToolchain(self)
+        if self.settings.compiler == "clang" and Version(self.settings.compiler.version) >= "22":
+            tc.extra_cxxflags.append("-Wno-error=c2y-extensions")
         tc.variables["BENCHMARK_ENABLE_TESTING"] = "OFF"
         tc.variables["BENCHMARK_ENABLE_GTEST_TESTS"] = "OFF"
         tc.variables["BENCHMARK_ENABLE_LTO"] = self.options.enable_lto
