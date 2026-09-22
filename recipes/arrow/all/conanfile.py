@@ -566,7 +566,7 @@ class ArrowConan(ConanFile):
                 self,
                 pattern="libsubstrait*",
                 dst=os.path.join(self.package_folder, "lib"),
-                src=os.path.join(self.build_folder, "release"),
+                src=os.path.join(self.build_folder, str(self.settings.build_type).lower()),
                 keep_path=False,
             )
 
