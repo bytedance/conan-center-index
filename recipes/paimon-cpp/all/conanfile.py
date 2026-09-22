@@ -130,6 +130,9 @@ class PaimonCppConan(ConanFile):
 
         flags = "-Wno-error=uninitialized -Wno-error=maybe-uninitialized"
         cxx_flags = flags
+        if str(self.settings.compiler) in ("clang", "apple-clang"):
+            # Factory registration intentionally uses global constructors.
+            cxx_flags += " -Wno-error=global-constructors"
         if str(self.settings.compiler) == "gcc" and Version(
             str(self.settings.compiler.version)
         ) >= Version("16"):
