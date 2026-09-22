@@ -62,6 +62,9 @@ patches:
     - patch_file: "patches/0006-backport-arm-compilation-fix.patch"
       patch_source: "https://github.com/abseil/abseil-cpp/pull/1710"
   "20230802.1":
+    - patch_file: "patches/20230802.1-0002-fix-uintptr-include.patch"
+      patch_description: "Include stdint.h for uintptr_t in debug allocation assertions"
+      patch_type: "portability"
     - patch_file: "patches/0003-absl-string-libm-20230802.patch"
       patch_description: "link libm to absl string"
       patch_type: "portability"

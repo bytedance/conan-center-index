@@ -1,0 +1,11 @@
+--- a/absl/container/internal/container_memory.h
++++ b/absl/container/internal/container_memory.h
+@@ -15,6 +15,8 @@
+ #ifndef ABSL_CONTAINER_INTERNAL_CONTAINER_MEMORY_H_
+ #define ABSL_CONTAINER_INTERNAL_CONTAINER_MEMORY_H_
+ 
++#include <stdint.h>
++
+ #include <cassert>
+ #include <cstddef>
+ #include <cstring>
