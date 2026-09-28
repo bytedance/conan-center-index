@@ -1355,11 +1355,10 @@ class BoostConan(ConanFile):
         # CXX FLAGS
         cxx_flags = []
         if (self.settings.os == "Linux" and self.settings.compiler == "clang"
-                and self.settings.compiler.get_safe("libcxx") in ("libstdc++", "libstdc++11")
                 and not cross_building(self)):
             target = StringIO()
             self.run(f'"{self._cxx}" -dumpmachine', stdout=target)
-            # B2's synthesized target can prevent Clang from locating the native GCC installation.
+            # B2's synthesized target can hide native libstdc++ or target-specific libc++ paths.
             target_flag = f"--target={target.getvalue().strip()}"
             cxx_flags.append(target_flag)
             link_flags.append(target_flag)
