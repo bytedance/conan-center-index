@@ -28,6 +28,9 @@ patches:
     - patch_file: "patches/3.0.4-bolt-check-tzdb.patch"
       patch_description: "Throw error when timezone DB is missing"
       patch_type: "bugfix"
+    - patch_file: "patches/3.0.4-bolt-qualify-from-stream.patch"
+      patch_description: "Avoid ambiguous from_stream lookup with C++20 chrono"
+      patch_type: "portability"
   "3.0.1":
     - patch_file: "patches/cmake-3.0.1.patch"
       patch_description: "Disable string view to workaround clang 5 not having it"

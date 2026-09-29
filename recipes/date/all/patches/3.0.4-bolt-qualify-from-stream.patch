@@ -1,0 +1,81 @@
+diff --git a/include/date/date.h b/include/date/date.h
+index f70153b..b1463e1 100644
+--- a/include/date/date.h
++++ b/include/date/date.h
+@@ -8232,13 +8232,13 @@ operator>>(std::basic_istream<CharT, Traits>& is,
+            const parse_manip<Parsable, CharT, Traits, Alloc>& x)
+ {
+-    return from_stream(is, x.format_.c_str(), x.tp_, x.abbrev_, x.offset_);
++    return date::from_stream(is, x.format_.c_str(), x.tp_, x.abbrev_, x.offset_);
+ }
+ 
+ template <class Parsable, class CharT, class Traits, class Alloc>
+ inline
+ auto
+ parse(const std::basic_string<CharT, Traits, Alloc>& format, Parsable& tp)
+-    -> decltype(from_stream(std::declval<std::basic_istream<CharT, Traits>&>(),
++    -> decltype(date::from_stream(std::declval<std::basic_istream<CharT, Traits>&>(),
+                             format.c_str(), tp),
+                 parse_manip<Parsable, CharT, Traits, Alloc>{format, tp})
+ {
+@@ -8250,7 +8250,7 @@ inline
+ auto
+ parse(const std::basic_string<CharT, Traits, Alloc>& format, Parsable& tp,
+       std::basic_string<CharT, Traits, Alloc>& abbrev)
+-    -> decltype(from_stream(std::declval<std::basic_istream<CharT, Traits>&>(),
++    -> decltype(date::from_stream(std::declval<std::basic_istream<CharT, Traits>&>(),
+                             format.c_str(), tp, &abbrev),
+                 parse_manip<Parsable, CharT, Traits, Alloc>{format, tp, &abbrev})
+ {
+@@ -8262,7 +8262,7 @@ inline
+ auto
+ parse(const std::basic_string<CharT, Traits, Alloc>& format, Parsable& tp,
+       std::chrono::minutes& offset)
+-    -> decltype(from_stream(std::declval<std::basic_istream<CharT, Traits>&>(),
++    -> decltype(date::from_stream(std::declval<std::basic_istream<CharT, Traits>&>(),
+                             format.c_str(), tp,
+                             std::declval<std::basic_string<CharT, Traits, Alloc>*>(),
+                             &offset),
+@@ -8276,7 +8276,7 @@ inline
+ auto
+ parse(const std::basic_string<CharT, Traits, Alloc>& format, Parsable& tp,
+       std::basic_string<CharT, Traits, Alloc>& abbrev, std::chrono::minutes& offset)
+-    -> decltype(from_stream(std::declval<std::basic_istream<CharT, Traits>&>(),
++    -> decltype(date::from_stream(std::declval<std::basic_istream<CharT, Traits>&>(),
+                             format.c_str(), tp, &abbrev, &offset),
+                 parse_manip<Parsable, CharT, Traits, Alloc>{format, tp, &abbrev, &offset})
+ {
+@@ -8289,7 +8289,7 @@ template <class Parsable, class CharT>
+ inline
+ auto
+ parse(const CharT* format, Parsable& tp)
+-    -> decltype(from_stream(std::declval<std::basic_istream<CharT>&>(), format, tp),
++    -> decltype(date::from_stream(std::declval<std::basic_istream<CharT>&>(), format, tp),
+                 parse_manip<Parsable, CharT>{format, tp})
+ {
+     return {format, tp};
+@@ -8300,6 +8300,6 @@ inline
+ auto
+ parse(const CharT* format, Parsable& tp, std::basic_string<CharT, Traits, Alloc>& abbrev)
+-    -> decltype(from_stream(std::declval<std::basic_istream<CharT, Traits>&>(), format,
++    -> decltype(date::from_stream(std::declval<std::basic_istream<CharT, Traits>&>(), format,
+                             tp, &abbrev),
+                 parse_manip<Parsable, CharT, Traits, Alloc>{format, tp, &abbrev})
+ {
+@@ -8311,6 +8311,6 @@ inline
+ auto
+ parse(const CharT* format, Parsable& tp, std::chrono::minutes& offset)
+-    -> decltype(from_stream(std::declval<std::basic_istream<CharT>&>(), format,
++    -> decltype(date::from_stream(std::declval<std::basic_istream<CharT>&>(), format,
+                             tp, std::declval<std::basic_string<CharT>*>(), &offset),
+                 parse_manip<Parsable, CharT>{format, tp, nullptr, &offset})
+ {
+@@ -8322,7 +8322,7 @@ inline
+ auto
+ parse(const CharT* format, Parsable& tp,
+       std::basic_string<CharT, Traits, Alloc>& abbrev, std::chrono::minutes& offset)
+-    -> decltype(from_stream(std::declval<std::basic_istream<CharT, Traits>&>(), format,
++    -> decltype(date::from_stream(std::declval<std::basic_istream<CharT, Traits>&>(), format,
+                             tp, &abbrev, &offset),
+                 parse_manip<Parsable, CharT, Traits, Alloc>{format, tp, &abbrev, &offset})
+ {
