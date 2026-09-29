@@ -77,6 +77,9 @@ class PkgConfConan(ConanFile):
         env.generate()
 
         tc = MesonToolchain(self)
+        if self.settings.compiler in ("clang", "apple-clang"):
+            # Meson treats unused driver arguments as errors in header checks.
+            tc.c_args.append("-Qunused-arguments")
         if Version(self.version) >= "1.9.4":
             tc.project_options["tests"] = "disabled"
         else:
