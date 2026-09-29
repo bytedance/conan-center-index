@@ -339,6 +339,11 @@ class LLVMCoreConan(ConanFile):
 
     def generate(self):
         tc = CMakeToolchain(self, generator="Ninja")
+        # Conan initializes shared-library flags, but not MODULE library flags.
+        # LLVM plugins must use the same linker as its shared libraries.
+        tc.variables["CMAKE_MODULE_LINKER_FLAGS_INIT"] = (
+            "${CMAKE_MODULE_LINKER_FLAGS_INIT} ${CONAN_SHARED_LINKER_FLAGS}"
+        )
         # https://releases.llvm.org/12.0.0/docs/CMake.html
         # https://releases.llvm.org/13.0.0/docs/CMake.html
         # https://releases.llvm.org/19.1.0/docs/CMake.html
