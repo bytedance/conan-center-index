@@ -7,3 +7,6 @@ sources:
 patches:
   "1.0.3":
     - patch_file: "patches/0001-check-sys-syscall-h+wrap-includes.patch"
+    - patch_file: "patches/0002-enable-usleep-declaration.patch"
+      patch_description: "Enable BSD extensions for the usleep declaration on glibc"
+      patch_type: "portability"
