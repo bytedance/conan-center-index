@@ -74,6 +74,7 @@ class RoaringConan(ConanFile):
         tc.variables["ROARING_DISABLE_NEON"] = not self.options.get_safe("with_neon", False)
         tc.variables["ROARING_DISABLE_NATIVE"] = not self.options.native_optimization
         tc.variables["ROARING_BUILD_STATIC"] = not self.options.shared
+        tc.variables["ROARING_USE_CPM"] = False
         tc.variables["ENABLE_ROARING_TESTS"] = False
         # Relocatable shared lib on Macos
         tc.cache_variables["CMAKE_POLICY_DEFAULT_CMP0042"] = "NEW"
