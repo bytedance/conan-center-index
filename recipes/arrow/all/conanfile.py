@@ -400,6 +400,9 @@ class ArrowConan(ConanFile):
     def source(self):
         get(self, **self.conan_data["sources"][self.version],
             filename=f"apache-arrow-{self.version}.tar.gz", strip_root=True)
+        get(self, **self.conan_data["substrait_sources"][self.version],
+            filename="substrait.tar.gz", destination=os.path.join("cpp", "thirdparty", "substrait"),
+            strip_root=True)
         self._patch_sources()
 
     def generate(self):
@@ -559,6 +562,9 @@ class ArrowConan(ConanFile):
     def package(self):
         copy(self, pattern="LICENSE.txt", dst=os.path.join(self.package_folder, "licenses"), src=self.source_folder)
         copy(self, pattern="NOTICE.txt", dst=os.path.join(self.package_folder, "licenses"), src=self.source_folder)
+        if self.options.get_safe("substrait"):
+            copy(self, "LICENSE", src=os.path.join(self.source_folder, "cpp", "thirdparty", "substrait"),
+                 dst=os.path.join(self.package_folder, "licenses", "substrait"))
         cmake =CMake(self)
         cmake.install()
         if self.options.get_safe("substrait"):

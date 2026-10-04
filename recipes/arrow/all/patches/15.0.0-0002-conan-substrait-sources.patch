@@ -1,0 +1,43 @@
+--- a/cpp/cmake_modules/ThirdpartyToolchain.cmake
++++ b/cpp/cmake_modules/ThirdpartyToolchain.cmake
+@@ -1906,16 +1906,9 @@
+   set(ARROW_SUBSTRAIT_PROTOS extension_rels)
+   set(ARROW_SUBSTRAIT_PROTOS_DIR "${CMAKE_SOURCE_DIR}/proto")
+ 
+-  externalproject_add(substrait_ep
+-                      ${EP_COMMON_OPTIONS}
+-                      CONFIGURE_COMMAND ""
+-                      BUILD_COMMAND ""
+-                      INSTALL_COMMAND ""
+-                      URL ${SUBSTRAIT_SOURCE_URL}
+-                      URL_HASH "SHA256=${ARROW_SUBSTRAIT_BUILD_SHA256_CHECKSUM}")
+-
+-  externalproject_get_property(substrait_ep SOURCE_DIR)
+-  set(SUBSTRAIT_LOCAL_DIR ${SOURCE_DIR})
++  set(SUBSTRAIT_LOCAL_DIR "${CMAKE_SOURCE_DIR}/thirdparty/substrait")
++  # Track imported protos as well as the direct protoc inputs.
++  file(GLOB_RECURSE SUBSTRAIT_PROTO_FILES "${SUBSTRAIT_LOCAL_DIR}/proto/*.proto")
+ 
+   set(SUBSTRAIT_CPP_DIR "${CMAKE_CURRENT_BINARY_DIR}/substrait_ep-generated")
+   file(MAKE_DIRECTORY ${SUBSTRAIT_CPP_DIR})
+@@ -1952,7 +1945,8 @@
+                        COMMAND ${ARROW_PROTOBUF_PROTOC} "-I${SUBSTRAIT_LOCAL_DIR}/proto"
+                                "--cpp_out=${SUBSTRAIT_CPP_DIR}"
+                                "${SUBSTRAIT_LOCAL_DIR}/proto/substrait/${SUBSTRAIT_PROTO}.proto"
+-                       DEPENDS ${PROTO_DEPENDS} substrait_ep)
++                       DEPENDS ${PROTO_DEPENDS} ${SUBSTRAIT_PROTO_FILES}
++                       VERBATIM)
+ 
+     list(APPEND SUBSTRAIT_SOURCES "${SUBSTRAIT_PROTO_GEN}.cc")
+   endforeach()
+@@ -1973,7 +1967,9 @@
+                                "-I${ARROW_SUBSTRAIT_PROTOS_DIR}"
+                                "--cpp_out=${SUBSTRAIT_CPP_DIR}"
+                                "${ARROW_SUBSTRAIT_PROTOS_DIR}/substrait/${ARROW_SUBSTRAIT_PROTO}.proto"
+-                       DEPENDS ${PROTO_DEPENDS} substrait_ep)
++                       DEPENDS ${PROTO_DEPENDS} ${SUBSTRAIT_PROTO_FILES}
++                               "${ARROW_SUBSTRAIT_PROTOS_DIR}/substrait/${ARROW_SUBSTRAIT_PROTO}.proto"
++                       VERBATIM)
+ 
+     list(APPEND SUBSTRAIT_SOURCES "${ARROW_SUBSTRAIT_PROTO_GEN}.cc")
+   endforeach()

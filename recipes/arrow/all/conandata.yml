@@ -31,14 +31,71 @@ sources:
   "14.0.2":
     url: "https://www.apache.org/dyn/closer.lua/arrow/arrow-14.0.2/apache-arrow-14.0.2.tar.gz?action=download"
     sha256: "1304dedb41896008b89fe0738c71a95d9b81752efc77fa70f264cb1da15d9bc2"
+substrait_sources:
+  "21.0.0":
+    url:
+      - "https://codeload.github.com/substrait-io/substrait/tar.gz/refs/tags/v0.44.0"
+      - "https://github.com/substrait-io/substrait/archive/v0.44.0.tar.gz"
+    sha256: "f989a862f694e7dbb695925ddb7c4ce06aa6c51aca945105c075139aed7e55a2"
+  "20.0.0":
+    url:
+      - "https://codeload.github.com/substrait-io/substrait/tar.gz/refs/tags/v0.44.0"
+      - "https://github.com/substrait-io/substrait/archive/v0.44.0.tar.gz"
+    sha256: "f989a862f694e7dbb695925ddb7c4ce06aa6c51aca945105c075139aed7e55a2"
+  "19.0.1":
+    url:
+      - "https://codeload.github.com/substrait-io/substrait/tar.gz/refs/tags/v0.44.0"
+      - "https://github.com/substrait-io/substrait/archive/v0.44.0.tar.gz"
+    sha256: "f989a862f694e7dbb695925ddb7c4ce06aa6c51aca945105c075139aed7e55a2"
+  "18.1.0":
+    url:
+      - "https://codeload.github.com/substrait-io/substrait/tar.gz/refs/tags/v0.44.0"
+      - "https://github.com/substrait-io/substrait/archive/v0.44.0.tar.gz"
+    sha256: "f989a862f694e7dbb695925ddb7c4ce06aa6c51aca945105c075139aed7e55a2"
+  "18.0.0":
+    url:
+      - "https://codeload.github.com/substrait-io/substrait/tar.gz/refs/tags/v0.44.0"
+      - "https://github.com/substrait-io/substrait/archive/v0.44.0.tar.gz"
+    sha256: "f989a862f694e7dbb695925ddb7c4ce06aa6c51aca945105c075139aed7e55a2"
+  "17.0.0":
+    url:
+      - "https://codeload.github.com/substrait-io/substrait/tar.gz/refs/tags/v0.44.0"
+      - "https://github.com/substrait-io/substrait/archive/v0.44.0.tar.gz"
+    sha256: "f989a862f694e7dbb695925ddb7c4ce06aa6c51aca945105c075139aed7e55a2"
+  "16.1.0":
+    url:
+      - "https://codeload.github.com/substrait-io/substrait/tar.gz/refs/tags/v0.44.0"
+      - "https://github.com/substrait-io/substrait/archive/v0.44.0.tar.gz"
+    sha256: "f989a862f694e7dbb695925ddb7c4ce06aa6c51aca945105c075139aed7e55a2"
+  "15.0.1-oss":
+    url:
+      - "https://codeload.github.com/substrait-io/substrait/tar.gz/refs/tags/v0.27.0"
+      - "https://github.com/substrait-io/substrait/archive/v0.27.0.tar.gz"
+    sha256: "4ed375f69d972a57fdc5ec406c17003a111831d8640d3f1733eccd4b3ff45628"
+  "15.0.0":
+    url:
+      - "https://codeload.github.com/substrait-io/substrait/tar.gz/refs/tags/v0.27.0"
+      - "https://github.com/substrait-io/substrait/archive/v0.27.0.tar.gz"
+    sha256: "4ed375f69d972a57fdc5ec406c17003a111831d8640d3f1733eccd4b3ff45628"
+  "14.0.2":
+    url:
+      - "https://codeload.github.com/substrait-io/substrait/tar.gz/refs/tags/v0.27.0"
+      - "https://github.com/substrait-io/substrait/archive/v0.27.0.tar.gz"
+    sha256: "4ed375f69d972a57fdc5ec406c17003a111831d8640d3f1733eccd4b3ff45628"
 patches:
   "21.0.0":
     - patch_file: "patches/21.0.0-0001-fix-downloaded-mimalloc.patch"
       patch_description: "use cci package"
       patch_type: "conan"
+    - patch_file: "patches/21.0.0-0002-conan-substrait-sources.patch"
+      patch_description: "Use Substrait sources downloaded by Conan"
+      patch_type: "conan"
   "20.0.0":
     - patch_file: "patches/20.0.0-0001-fix-downloaded-mimalloc.patch"
       patch_description: "use cci package"
+      patch_type: "conan"
+    - patch_file: "patches/20.0.0-0002-conan-substrait-sources.patch"
+      patch_description: "Use Substrait sources downloaded by Conan"
       patch_type: "conan"
   "19.0.1":
     - patch_file: "patches/19.0.1-0001-fix-cmake.patch"
@@ -47,21 +104,36 @@ patches:
     - patch_file: "patches/19.0.1-0002-fix-downloaded-mimalloc.patch"
       patch_description: "use cci package"
       patch_type: "conan"
+    - patch_file: "patches/19.0.1-0002-conan-substrait-sources.patch"
+      patch_description: "Use Substrait sources downloaded by Conan"
+      patch_type: "conan"
   "18.1.0":
     - patch_file: "patches/18.0.0-0001-fix-cmake.patch"
       patch_description: "use cci package"
+      patch_type: "conan"
+    - patch_file: "patches/18.1.0-0002-conan-substrait-sources.patch"
+      patch_description: "Use Substrait sources downloaded by Conan"
       patch_type: "conan"
   "18.0.0":
     - patch_file: "patches/18.0.0-0001-fix-cmake.patch"
       patch_description: "use cci package"
       patch_type: "conan"
+    - patch_file: "patches/18.0.0-0002-conan-substrait-sources.patch"
+      patch_description: "Use Substrait sources downloaded by Conan"
+      patch_type: "conan"
   "17.0.0":
     - patch_file: "patches/16.0.0-0001-fix-cmake.patch"
       patch_description: "use cci package"
       patch_type: "conan"
+    - patch_file: "patches/17.0.0-0002-conan-substrait-sources.patch"
+      patch_description: "Use Substrait sources downloaded by Conan"
+      patch_type: "conan"
   "16.1.0":
     - patch_file: "patches/16.0.0-0001-fix-cmake.patch"
       patch_description: "use cci package"
+      patch_type: "conan"
+    - patch_file: "patches/16.1.0-0002-conan-substrait-sources.patch"
+      patch_description: "Use Substrait sources downloaded by Conan"
       patch_type: "conan"
   "15.0.1-oss":
     - patch_file: "patches/15.0.0-0001-fix-cmake.patch"
@@ -100,12 +172,20 @@ patches:
     - patch_file: "patches/15.0.1-0006-system-gtest-cmakedeps.patch"
       patch_description: "support Conan CMakeDeps GTest targets"
       patch_type: "conan"
+    - patch_file: "patches/15.0.0-0002-conan-substrait-sources.patch"
+      patch_description: "Use Substrait sources downloaded by Conan"
+      patch_type: "conan"
   "15.0.0":
     - patch_file: "patches/11.0.0-0001-fix-cmake.patch"
       patch_description: "use cci package"
+      patch_type: "conan"
+    - patch_file: "patches/15.0.0-0002-conan-substrait-sources.patch"
+      patch_description: "Use Substrait sources downloaded by Conan"
       patch_type: "conan"
   "14.0.2":
     - patch_file: "patches/11.0.0-0001-fix-cmake.patch"
       patch_description: "use cci package"
       patch_type: "conan"
-
+    - patch_file: "patches/14.0.2-0002-conan-substrait-sources.patch"
+      patch_description: "Use Substrait sources downloaded by Conan"
+      patch_type: "conan"
