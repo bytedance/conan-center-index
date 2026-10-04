@@ -13,3 +13,32 @@ sources:
   "1.9.5":
     url: "https://archive.apache.org/dist/orc/orc-1.9.5/orc-1.9.5.tar.gz"
     sha256: "6900b4e8a2e4e49275f4067bd0f838ad68330204305fd3f13a5ec519e9d71547"
+orc_format_sources:
+  "2.1.1":
+    url:
+      - "https://mirrors.huaweicloud.com/apache/orc/orc-format-1.0.0/orc-format-1.0.0.tar.gz"
+      - "https://archive.apache.org/dist/orc/orc-format-1.0.0/orc-format-1.0.0.tar.gz"
+    sha256: "739fae5ff94b1f812b413077280361045bf92e510ef04b34a610e23a945d8cd5"
+  "2.0.3":
+    url:
+      - "https://mirrors.huaweicloud.com/apache/orc/orc-format-1.0.0/orc-format-1.0.0.tar.gz"
+      - "https://archive.apache.org/dist/orc/orc-format-1.0.0/orc-format-1.0.0.tar.gz"
+    sha256: "739fae5ff94b1f812b413077280361045bf92e510ef04b34a610e23a945d8cd5"
+  "2.0.0":
+    url:
+      - "https://mirrors.huaweicloud.com/apache/orc/orc-format-1.0.0/orc-format-1.0.0.tar.gz"
+      - "https://archive.apache.org/dist/orc/orc-format-1.0.0/orc-format-1.0.0.tar.gz"
+    sha256: "739fae5ff94b1f812b413077280361045bf92e510ef04b34a610e23a945d8cd5"
+patches:
+  "2.1.1":
+    - patch_file: "patches/2.1.1-0001-use-conan-orc-format.patch"
+      patch_description: "Use ORC Format sources downloaded by Conan"
+      patch_type: "conan"
+  "2.0.3":
+    - patch_file: "patches/2.0.0-0001-use-conan-orc-format.patch"
+      patch_description: "Use ORC Format sources downloaded by Conan"
+      patch_type: "conan"
+  "2.0.0":
+    - patch_file: "patches/2.0.0-0001-use-conan-orc-format.patch"
+      patch_description: "Use ORC Format sources downloaded by Conan"
+      patch_type: "conan"

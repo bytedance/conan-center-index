@@ -1,0 +1,65 @@
+--- a/cmake_modules/ThirdpartyToolchain.cmake
++++ b/cmake_modules/ThirdpartyToolchain.cmake
+@@ -19,7 +19,6 @@
+ set(ORC_SYSTEM_DEPENDENCIES)
+ set(ORC_INSTALL_INTERFACE_TARGETS)
+ 
+-set(ORC_FORMAT_VERSION "1.0.0")
+ set(LZ4_VERSION "1.10.0")
+ set(SNAPPY_VERSION "1.2.1")
+ set(ZLIB_VERSION "1.3.1")
+@@ -133,24 +132,6 @@
+ function(orc_provide_find_module PACKAGE_NAME)
+   orc_provide_cmake_module("Find${PACKAGE_NAME}")
+ endfunction()
+-
+-# ----------------------------------------------------------------------
+-# ORC Format
+-if(DEFINED ENV{ORC_FORMAT_URL})
+-  set(ORC_FORMAT_SOURCE_URL "$ENV{ORC_FORMAT_URL}")
+-  message(STATUS "Using ORC_FORMAT_URL: ${ORC_FORMAT_SOURCE_URL}")
+-else()
+-  set(ORC_FORMAT_SOURCE_URL "https://www.apache.org/dyn/closer.lua/orc/orc-format-${ORC_FORMAT_VERSION}/orc-format-${ORC_FORMAT_VERSION}.tar.gz?action=download" )
+-  message(STATUS "Using DEFAULT URL: ${ORC_FORMAT_SOURCE_URL}")
+-endif()
+-ExternalProject_Add (orc-format_ep
+-  URL ${ORC_FORMAT_SOURCE_URL}
+-  URL_HASH SHA256=739fae5ff94b1f812b413077280361045bf92e510ef04b34a610e23a945d8cd5
+-  CONFIGURE_COMMAND ""
+-  BUILD_COMMAND     ""
+-  INSTALL_COMMAND     ""
+-  TEST_COMMAND     ""
+-)
+ 
+ # ----------------------------------------------------------------------
+ # Snappy
+--- a/c++/src/CMakeLists.txt
++++ b/c++/src/CMakeLists.txt
+@@ -138,11 +138,15 @@
+   "${CMAKE_CURRENT_BINARY_DIR}/Adaptor.hh"
+   )
+ 
++set(ORC_FORMAT_PROTO_DIR "${PROJECT_SOURCE_DIR}/orc-format/src/main/proto/orc/proto")
++
+ add_custom_command(OUTPUT orc_proto.pb.h orc_proto.pb.cc
+    COMMAND ${PROTOBUF_EXECUTABLE}
+-        -I ../../orc-format_ep-prefix/src/orc-format_ep/src/main/proto/orc/proto
+-        --cpp_out="${CMAKE_CURRENT_BINARY_DIR}"
+-        ../../orc-format_ep-prefix/src/orc-format_ep/src/main/proto/orc/proto/orc_proto.proto
++        -I "${ORC_FORMAT_PROTO_DIR}"
++        "--cpp_out=${CMAKE_CURRENT_BINARY_DIR}"
++        "${ORC_FORMAT_PROTO_DIR}/orc_proto.proto"
++   DEPENDS "${ORC_FORMAT_PROTO_DIR}/orc_proto.proto"
++   VERBATIM
+ )
+ 
+ set(SOURCE_FILES
+@@ -238,8 +242,6 @@
+   target_compile_definitions(orc PUBLIC ENABLE_METRICS=0)
+ endif ()
+ 
+-add_dependencies(orc orc-format_ep)
+-
+ install(TARGETS orc EXPORT orc_targets)
+ install(EXPORT orc_targets
+   DESTINATION ${ORC_INSTALL_CMAKE_DIR}

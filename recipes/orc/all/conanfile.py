@@ -4,7 +4,7 @@ from conan import ConanFile
 from conan.tools.build import check_min_cppstd
 from conan.tools.cmake import CMake, CMakeDeps, CMakeToolchain, cmake_layout
 from conan.tools.env import VirtualBuildEnv, VirtualRunEnv
-from conan.tools.files import copy, get, rmdir, replace_in_file, mkdir
+from conan.tools.files import apply_conandata_patches, copy, export_conandata_patches, get, rmdir, replace_in_file, mkdir
 from conan.tools.scm import Version
 
 required_conan_version = ">=2.1"
@@ -37,6 +37,7 @@ class OrcRecipe(ConanFile):
         return Version(self.version) < "2.0.0"
 
     def export_sources(self):
+        export_conandata_patches(self)
         if self._should_patch_thirdparty_toolchain:
             copy(self, "ConanThirdpartyToolchain.cmake",
                  self.recipe_folder, os.path.join(self.export_sources_folder, "src", "cmake_modules"))
@@ -70,6 +71,9 @@ class OrcRecipe(ConanFile):
 
     def source(self):
         get(self, **self.conan_data["sources"][self.version], strip_root=True)
+        if self.version in self.conan_data["orc_format_sources"]:
+            get(self, **self.conan_data["orc_format_sources"][self.version],
+                destination="orc-format", strip_root=True)
         self._patch_sources()
 
     def generate(self):
@@ -99,6 +103,7 @@ class OrcRecipe(ConanFile):
         deps.generate()
 
     def _patch_sources(self):
+        apply_conandata_patches(self)
         if self._should_patch_thirdparty_toolchain:
             replace_in_file(self, os.path.join(self.source_folder, "CMakeLists.txt"),
                             "ThirdpartyToolchain", "ConanThirdpartyToolchain")
