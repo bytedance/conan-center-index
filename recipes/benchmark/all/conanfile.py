@@ -81,8 +81,6 @@ class BenchmarkConan(ConanFile):
 
     def generate(self):
         tc = CMakeToolchain(self)
-        if self.settings.compiler == "clang" and Version(self.settings.compiler.version) >= "22":
-            tc.extra_cxxflags.append("-Wno-error=c2y-extensions")
         tc.variables["BENCHMARK_ENABLE_TESTING"] = "OFF"
         tc.variables["BENCHMARK_ENABLE_GTEST_TESTS"] = "OFF"
         tc.variables["BENCHMARK_ENABLE_LTO"] = self.options.enable_lto
@@ -90,6 +88,9 @@ class BenchmarkConan(ConanFile):
         tc.variables["BENCHMARK_ENABLE_LIBPFM"] = self.options.get_safe("enable_libpfm", False)
         tc.variables["BENCHMARK_ENABLE_WERROR"] = False
         tc.variables["BENCHMARK_FORCE_WERROR"] = False
+        # Upstream adds -pedantic-errors independently of its Werror options.
+        # This rejects __COUNTER__ with Clang 22; keep the other warnings enabled.
+        tc.variables["HAVE_CXX_FLAG_PEDANTIC_ERRORS"] = False
         if self.settings.os != "Windows":
             if cross_building(self):
                 tc.variables["HAVE_STD_REGEX"] = False
