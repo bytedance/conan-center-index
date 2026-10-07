@@ -23,9 +23,11 @@ class OneTBBConan(ConanFile):
         " programs that take full advantage of multicore performance, that are portable, composable"
         " and have future-proof scalability.")
     topics = ("tbb", "threading", "parallelism", "tbbmalloc")
-    package_type = "shared-library"
+    package_type = "library"
     settings = "os", "arch", "compiler", "build_type"
     options = {
+        "shared": [True, False],
+        "fPIC": [True, False],
         "tbbmalloc": [True, False],
         "tbbproxy": [True, False],
         "tbbbind": [True, False],
@@ -33,6 +35,8 @@ class OneTBBConan(ConanFile):
         "build_apple_frameworks": [True, False],
     }
     default_options = {
+        "shared": False,
+        "fPIC": True,
         "tbbmalloc": True,
         "tbbproxy": True,
         "tbbbind": True,
@@ -46,7 +50,7 @@ class OneTBBConan(ConanFile):
 
     @property
     def _has_tbbproxy(self):
-        return Version(self.version) < "2021.6.0" or self.options.get_safe("tbbproxy")
+        return self.options.shared and (Version(self.version) < "2021.6.0" or self.options.get_safe("tbbproxy"))
 
     @property
     def _tbbbind_hwloc_version(self):
@@ -80,6 +84,8 @@ class OneTBBConan(ConanFile):
         export_conandata_patches(self)
 
     def config_options(self):
+        if self.settings.os == "Windows":
+            self.options.rm_safe("fPIC")
         if Version(self.version) < "2021.5.0":
             del self.options.tbbmalloc
         if Version(self.version) < "2021.6.0":
@@ -92,6 +98,12 @@ class OneTBBConan(ConanFile):
             del self.options.build_apple_frameworks
 
     def configure(self):
+        if self.options.shared:
+            self.options.rm_safe("fPIC")
+        else:
+            # Upstream skips these targets when BUILD_SHARED_LIBS is OFF.
+            self.options.rm_safe("tbbproxy")
+            self.options.rm_safe("tbbbind")
         if Version(self.version) >= "2021.6.0" and not self.options.tbbmalloc:
             self.options.rm_safe("tbbproxy")
 
@@ -130,7 +142,7 @@ class OneTBBConan(ConanFile):
         if self.options.get_safe("interprocedural_optimization") is not None:
             toolchain.variables["TBB_ENABLE_IPO"] = self.options.interprocedural_optimization
         if Version(self.version) >= "2021.6.0" and self.options.get_safe("tbbmalloc"):
-            toolchain.variables["TBBMALLOC_PROXY_BUILD"] = self.options.tbbproxy
+            toolchain.variables["TBBMALLOC_PROXY_BUILD"] = self._has_tbbproxy
         toolchain.variables["TBB_DISABLE_HWLOC_AUTOMATIC_SEARCH"] = not self._tbbbind_build
         if self._tbbbind_explicit_hwloc:
             hwloc_package_folder = self.dependencies["hwloc"].package_folder
