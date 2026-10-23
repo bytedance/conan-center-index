@@ -25,11 +25,13 @@ class LibisalConan(ConanFile):
         "shared": [True, False],
         "fPIC": [True, False],
         "with_prefix": [True, False],
+        "with_gfni": [True, False],
     }
     default_options = {
         "shared": False,
         "fPIC": True,
         "with_prefix": True,
+        "with_gfni": True,
     }
 
     @property
@@ -40,6 +42,8 @@ class LibisalConan(ConanFile):
         export_conandata_patches(self)
 
     def config_options(self):
+        if self.version != "2.32.1":
+            del self.options.with_gfni
         if self.settings.os == "Windows":
             del self.options.fPIC
 
@@ -69,13 +73,19 @@ class LibisalConan(ConanFile):
         env.generate()
         if is_msvc(self):
             tc = NMakeToolchain(self)
-            tc.generate()
+            env = tc.environment()
+            if not self.options.get_safe("with_gfni", True):
+                # Makefile.nmake forwards D to NASM as well as the C compiler.
+                env.append("D", "-DISAL_DISABLE_GFNI=1")
+            tc.generate(env)
         else:
             tc = AutotoolsToolchain(self)
             # ./configure bugs out if $AS executable has an absolute path
             env = tc.environment()
             env.define("AS", "nasm")
             tc.configure_args.append("--enable-prefix" if self.options.with_prefix else "")
+            if self.version == "2.32.1":
+                tc.configure_args.append("--enable-gfni" if self.options.with_gfni else "--disable-gfni")
             tc.generate(env)
 
     def build(self):

@@ -1,0 +1,53 @@
+--- a/configure.ac
++++ b/configure.ac
+@@ -164,6 +164,13 @@
+ 	[], [enable_programs=no])
+ AM_CONDITIONAL([HAVE_PROGRAMS], [test "x$enable_programs" != "xno"])
+ 
++AC_ARG_ENABLE([gfni],
++        AS_HELP_STRING([--disable-gfni], [disable GFNI runtime dispatch @<:@default=enabled@:>@]),
++        [], [enable_gfni=yes])
++AS_IF([test "x$enable_gfni" = "xno"], [
++        AC_DEFINE(ISAL_DISABLE_GFNI, [1], [Disable GFNI runtime dispatch.])
++])
++
+ # If this build is for x86, look for nasm
+ if test x"$is_x86" = x"yes"; then
+   AC_MSG_CHECKING([whether Intel CET is enabled])
+--- a/erasure_code/ec_multibinary.asm
++++ b/erasure_code/ec_multibinary.asm
+@@ -84,6 +84,15 @@
+ mbin_interface ec_init_tables
+ mbin_interface gf_vect_mul_init
+ 
++%ifdef ISAL_DISABLE_GFNI
++mbin_dispatch_init8 gf_vect_mul, gf_vect_mul_base, gf_vect_mul_sse, gf_vect_mul_avx, gf_vect_mul_avx, gf_vect_mul_avx, gf_vect_mul_avx, gf_vect_mul_avx
++mbin_dispatch_init8 ec_encode_data, ec_encode_data_base, ec_encode_data_sse, ec_encode_data_avx, ec_encode_data_avx2, ec_encode_data_avx512, ec_encode_data_avx2, ec_encode_data_avx512
++mbin_dispatch_init8_hygon ec_encode_data_update, ec_encode_data_update_base, ec_encode_data_update_sse, ec_encode_data_update_avx, ec_encode_data_update_avx2, ec_encode_data_update_avx512, ec_encode_data_update_avx2, ec_encode_data_update_avx512
++mbin_dispatch_init8 gf_vect_mad, gf_vect_mad_base, gf_vect_mad_sse, gf_vect_mad_avx, gf_vect_mad_avx2, gf_vect_mad_avx512, gf_vect_mad_avx2, gf_vect_mad_avx512
++mbin_dispatch_init8 gf_vect_dot_prod, gf_vect_dot_prod_base, gf_vect_dot_prod_sse, gf_vect_dot_prod_avx, gf_vect_dot_prod_avx2, gf_vect_dot_prod_avx512, gf_vect_dot_prod_avx2, gf_vect_dot_prod_avx512
++mbin_dispatch_init8 ec_init_tables, ec_init_tables_base, ec_init_tables_base, ec_init_tables_base, ec_init_tables_base, ec_init_tables_base, ec_init_tables_base, ec_init_tables_base
++mbin_dispatch_init8 gf_vect_mul_init, gf_vect_mul_init_base, gf_vect_mul_init_base, gf_vect_mul_init_base, gf_vect_mul_init_base, gf_vect_mul_init_base, gf_vect_mul_init_base, gf_vect_mul_init_base
++%else
+ mbin_dispatch_init8 gf_vect_mul, gf_vect_mul_base, gf_vect_mul_sse, gf_vect_mul_avx, gf_vect_mul_avx, gf_vect_mul_avx, gf_vect_mul_avx2_gfni, gf_vect_mul_avx2_gfni
+ mbin_dispatch_init8 ec_encode_data, ec_encode_data_base, ec_encode_data_sse, ec_encode_data_avx, ec_encode_data_avx2, ec_encode_data_avx512, ec_encode_data_avx2_gfni, ec_encode_data_avx512_gfni
+ mbin_dispatch_init8_hygon ec_encode_data_update, ec_encode_data_update_base, ec_encode_data_update_sse, ec_encode_data_update_avx, ec_encode_data_update_avx2, ec_encode_data_update_avx512, ec_encode_data_update_avx2_gfni, ec_encode_data_update_avx512_gfni
+@@ -91,3 +100,4 @@
+ mbin_dispatch_init8 gf_vect_dot_prod, gf_vect_dot_prod_base, gf_vect_dot_prod_sse, gf_vect_dot_prod_avx, gf_vect_dot_prod_avx2, gf_vect_dot_prod_avx512, gf_vect_dot_prod_avx2_gfni, gf_vect_dot_prod_avx512_gfni
+ mbin_dispatch_init8 ec_init_tables, ec_init_tables_base, ec_init_tables_base, ec_init_tables_base, ec_init_tables_base, ec_init_tables_base, ec_init_tables_gfni, ec_init_tables_gfni
+ mbin_dispatch_init8 gf_vect_mul_init, gf_vect_mul_init_base, gf_vect_mul_init_base, gf_vect_mul_init_base, gf_vect_mul_init_base, gf_vect_mul_init_base, gf_vect_mul_init_gfni, gf_vect_mul_init_gfni
++%endif
+--- a/raid/raid_multibinary.asm
++++ b/raid/raid_multibinary.asm
+@@ -59,7 +59,11 @@
+ 
+ 
+ mbin_dispatch_init6 xor_gen, xor_gen_base, xor_gen_sse, xor_gen_avx, xor_gen_avx, xor_gen_avx512
++%ifdef ISAL_DISABLE_GFNI
++mbin_dispatch_init8 pq_gen, pq_gen_base, pq_gen_sse, pq_gen_avx, pq_gen_avx2, pq_gen_avx512, pq_gen_avx2, pq_gen_avx512
++%else
+ mbin_dispatch_init8 pq_gen, pq_gen_base, pq_gen_sse, pq_gen_avx, pq_gen_avx2, pq_gen_avx512, pq_gen_avx2_gfni, pq_gen_avx512_gfni
++%endif
+ 
+ section .data
+ 
