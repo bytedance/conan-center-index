@@ -152,6 +152,14 @@ class B2Conan(ConanFile):
                                     b2_vcvars = os.path.join(
                                         kv.split('=')[1].strip(), 'Auxiliary', 'Build', 'vcvars32.bat')
                                     command += '"'+b2_vcvars+'" && '
+            else:
+                # Reuse the bootstrap toolset for installation instead of
+                # letting b2 fall back to the platform default (gcc on Linux).
+                with chdir(self, self._b2_engine_dir):
+                    with self._bootstrap_env():
+                        buf = StringIO()
+                        self.run('./build.sh --guess-toolset', buf)
+                        b2_toolset = buf.getvalue().strip()
         command += "build" if use_windows_commands else "./build.sh"
 
         cxxflags = ""
