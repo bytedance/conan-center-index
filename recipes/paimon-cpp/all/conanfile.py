@@ -137,8 +137,9 @@ class PaimonCppConan(ConanFile):
             str(self.settings.compiler.version)
         ) >= Version("16"):
             cxx_flags += " -Wno-error=array-bounds"
-        tc.cache_variables["CMAKE_CXX_FLAGS"] = cxx_flags
-        tc.cache_variables["CMAKE_C_FLAGS"] = flags
+        # Preserve Conan's architecture, standard library and profile flags.
+        tc.extra_cxxflags.extend(cxx_flags.split())
+        tc.extra_cflags.extend(flags.split())
 
         tc.variables["PAIMON_BUILD_TESTS"] = False
         tc.variables["PAIMON_BUILD_SHARED"] = bool(self.options.shared)
