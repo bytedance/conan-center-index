@@ -32,3 +32,6 @@ patches:
     - patch_file: "patches/0034-fix-cmake4.patch"
       patch_description: "Update CMake policy compatibility for CMake 4"
       patch_type: "portability"
+    - patch_file: "patches/0035-use-rebind-alloc-for-concurrent-hash-map.patch"
+      patch_description: "Use rebind_alloc for ConcurrentHashMap segments"
+      patch_type: "backport"
