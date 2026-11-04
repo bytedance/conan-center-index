@@ -28,3 +28,6 @@ patches:
     - patch_file: "patches/02-bd-compatible-with-java-semantics.patch"
       patch_description: "bytedance's modified version for compatible with java semantics"
       patch_type: "conan"
+    - patch_file: "patches/03-cmake4-compat.patch"
+      patch_description: "raise the minimum CMake version for CMake 4 compatibility"
+      patch_type: "conan"
