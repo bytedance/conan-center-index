@@ -113,6 +113,7 @@ class CMakeConan(ConanFile):
                 tc.variables["CMAKE_USE_OPENSSL"] = self.options.with_openssl
                 if self.options.with_openssl:
                     openssl = self.dependencies["openssl"]
+                    tc.variables["CMAKE_DISABLE_FIND_PACKAGE_PkgConfig"] = True
                     tc.variables["OPENSSL_ROOT_DIR"] = openssl.package_folder
                     tc.variables["OPENSSL_USE_STATIC_LIBS"] = not openssl.options.shared
             if cross_building(self):
@@ -136,6 +137,10 @@ class CMakeConan(ConanFile):
                         os.path.join(self.source_folder, "Utilities", "cmlibarchive", "CMakeLists.txt"),
                         "FIND_PACKAGE(OpenSSL)",
                         "FIND_PACKAGE(OpenSSL MODULE REQUIRED)")
+        replace_in_file(self,
+                        os.path.join(self.source_folder, "Utilities", "cmcurl", "CMakeLists.txt"),
+                        "find_package(OpenSSL)",
+                        "find_package(OpenSSL MODULE)")
         if self.options.bootstrap:
             toolchain_file_content = json.loads(load(self, os.path.join(self.generators_folder, "bootstrap_args")))
             bootstrap_cmake_options = toolchain_file_content.get("bootstrap_cmake_options")
