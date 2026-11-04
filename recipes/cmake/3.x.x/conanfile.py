@@ -113,6 +113,7 @@ class CMakeConan(ConanFile):
                 tc.variables["CMAKE_USE_OPENSSL"] = self.options.with_openssl
                 if self.options.with_openssl:
                     openssl = self.dependencies["openssl"]
+                    tc.variables["OPENSSL_ROOT_DIR"] = openssl.package_folder
                     tc.variables["OPENSSL_USE_STATIC_LIBS"] = not openssl.options.shared
             if cross_building(self):
                 tc.variables["HAVE_POLL_FINE_EXITCODE"] = ''
