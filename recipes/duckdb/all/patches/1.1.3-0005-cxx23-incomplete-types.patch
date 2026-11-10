@@ -1,0 +1,161 @@
+diff --git a/src/include/duckdb/main/secret/secret_manager.hpp b/src/include/duckdb/main/secret/secret_manager.hpp
+--- a/src/include/duckdb/main/secret/secret_manager.hpp
++++ b/src/include/duckdb/main/secret/secret_manager.hpp
+@@ -20,38 +20,6 @@
+ struct DBConfig;
+ class SchemaCatalogEntry;
+ 
+-//! Return value of a Secret Lookup
+-struct SecretMatch {
+-public:
+-	SecretMatch() : secret_entry(nullptr), score(NumericLimits<int64_t>::Minimum()) {
+-	}
+-
+-	SecretMatch(const SecretMatch &other)
+-	    : secret_entry((other.secret_entry != nullptr) ? make_uniq<SecretEntry>(*other.secret_entry) : nullptr),
+-	      score(other.score) {
+-	}
+-
+-	SecretMatch(SecretEntry &secret_entry, int64_t score)
+-	    : secret_entry(make_uniq<SecretEntry>(secret_entry)), score(score) {
+-	}
+-
+-	SecretMatch &operator=(const SecretMatch &other) {
+-		this->secret_entry = (other.secret_entry != nullptr) ? make_uniq<SecretEntry>(*other.secret_entry) : nullptr;
+-		this->score = other.score;
+-		return *this;
+-	};
+-
+-	//! Get the secret
+-	const BaseSecret &GetSecret() const;
+-
+-	bool HasMatch() {
+-		return secret_entry != nullptr;
+-	}
+-
+-	unique_ptr<SecretEntry> secret_entry;
+-	int64_t score;
+-};
+-
+ //! A Secret Entry in the secret manager
+ struct SecretEntry {
+ public:
+@@ -68,6 +36,38 @@
+ 	string storage_mode;
+ 	//! The secret pointer
+ 	unique_ptr<const BaseSecret> secret;
++};
++
++//! Return value of a Secret Lookup
++struct SecretMatch {
++public:
++	SecretMatch() : secret_entry(nullptr), score(NumericLimits<int64_t>::Minimum()) {
++	}
++
++	SecretMatch(const SecretMatch &other)
++	    : secret_entry((other.secret_entry != nullptr) ? make_uniq<SecretEntry>(*other.secret_entry) : nullptr),
++	      score(other.score) {
++	}
++
++	SecretMatch(SecretEntry &secret_entry, int64_t score)
++	    : secret_entry(make_uniq<SecretEntry>(secret_entry)), score(score) {
++	}
++
++	SecretMatch &operator=(const SecretMatch &other) {
++		this->secret_entry = (other.secret_entry != nullptr) ? make_uniq<SecretEntry>(*other.secret_entry) : nullptr;
++		this->score = other.score;
++		return *this;
++	};
++
++	//! Get the secret
++	const BaseSecret &GetSecret() const;
++
++	bool HasMatch() {
++		return secret_entry != nullptr;
++	}
++
++	unique_ptr<SecretEntry> secret_entry;
++	int64_t score;
+ };
+ 
+ struct SecretManagerConfig {
+diff --git a/src/include/duckdb/parser/parsed_data/copy_info.hpp b/src/include/duckdb/parser/parsed_data/copy_info.hpp
+--- a/src/include/duckdb/parser/parsed_data/copy_info.hpp
++++ b/src/include/duckdb/parser/parsed_data/copy_info.hpp
+@@ -23,8 +23,7 @@
+ 	static constexpr const ParseInfoType TYPE = ParseInfoType::COPY_INFO;
+ 
+ public:
+-	CopyInfo() : ParseInfo(TYPE), catalog(INVALID_CATALOG), schema(DEFAULT_SCHEMA) {
+-	}
++	CopyInfo();
+ 
+ 	//! The catalog name to copy to/from
+ 	string catalog;
+diff --git a/src/parser/parsed_data/copy_info.cpp b/src/parser/parsed_data/copy_info.cpp
+--- a/src/parser/parsed_data/copy_info.cpp
++++ b/src/parser/parsed_data/copy_info.cpp
+@@ -2,6 +2,9 @@
+ #include "duckdb/parser/query_node.hpp"
+ 
+ namespace duckdb {
++
++CopyInfo::CopyInfo() : ParseInfo(TYPE), catalog(INVALID_CATALOG), schema(DEFAULT_SCHEMA) {
++}
+ 
+ unique_ptr<CopyInfo> CopyInfo::Copy() const {
+ 	auto result = make_uniq<CopyInfo>();
+diff --git a/src/include/duckdb/parser/query_node.hpp b/src/include/duckdb/parser/query_node.hpp
+--- a/src/include/duckdb/parser/query_node.hpp
++++ b/src/include/duckdb/parser/query_node.hpp
+@@ -47,10 +47,8 @@
+ 
+ class QueryNode {
+ public:
+-	explicit QueryNode(QueryNodeType type) : type(type) {
+-	}
+-	virtual ~QueryNode() {
+-	}
++	explicit QueryNode(QueryNodeType type);
++	virtual ~QueryNode();
+ 
+ 	//! The type of the query node, either SetOperation or Select
+ 	QueryNodeType type;
+diff --git a/src/parser/query_node.cpp b/src/parser/query_node.cpp
+--- a/src/parser/query_node.cpp
++++ b/src/parser/query_node.cpp
+@@ -9,6 +9,11 @@
+ #include "duckdb/common/serializer/deserializer.hpp"
+ 
+ namespace duckdb {
++
++QueryNode::QueryNode(QueryNodeType type) : type(type) {
++}
++
++QueryNode::~QueryNode() = default;
+ 
+ CommonTableExpressionMap::CommonTableExpressionMap() {
+ }
+diff --git a/src/include/duckdb/parser/statement/select_statement.hpp b/src/include/duckdb/parser/statement/select_statement.hpp
+--- a/src/include/duckdb/parser/statement/select_statement.hpp
++++ b/src/include/duckdb/parser/statement/select_statement.hpp
+@@ -27,6 +27,7 @@
+ 
+ public:
+ 	SelectStatement();
++	~SelectStatement() override;
+ 
+ 	//! The main query node
+ 	unique_ptr<QueryNode> node;
+diff --git a/src/parser/statement/select_statement.cpp b/src/parser/statement/select_statement.cpp
+--- a/src/parser/statement/select_statement.cpp
++++ b/src/parser/statement/select_statement.cpp
+@@ -7,6 +7,8 @@
+ 
+ SelectStatement::SelectStatement() : SQLStatement(StatementType::SELECT_STATEMENT) {
+ }
++
++SelectStatement::~SelectStatement() = default;
+ 
+ SelectStatement::SelectStatement(const SelectStatement &other) : SQLStatement(other), node(other.node->Copy()) {
+ }
