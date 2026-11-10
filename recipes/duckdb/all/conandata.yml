@@ -40,6 +40,9 @@ patches:
     - patch_file: "patches/1.1.3-0005-cxx23-incomplete-types.patch"
       patch_description: "defer parser destruction until pointee types are complete and define SecretEntry before SecretMatch for C++23"
       patch_type: "portability"
+    - patch_file: "patches/1.1.3-0006-httplib-exception-include.patch"
+      patch_description: "include exception for httplib exception_ptr and current_exception with libc++"
+      patch_type: "portability"
   "1.1.2":
     - patch_file: "patches/1.1.1-0001-fix-cmake.patch"
       patch_description: "install static of shared library, add installation for odbc extention"

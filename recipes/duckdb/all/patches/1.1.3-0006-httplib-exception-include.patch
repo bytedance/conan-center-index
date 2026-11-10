@@ -1,0 +1,10 @@
+--- a/third_party/httplib/httplib.hpp
++++ b/third_party/httplib/httplib.hpp
+@@ -228,6 +228,7 @@
+ #include <condition_variable>
+ #include <cstring>
+ #include <errno.h>
++#include <exception>
+ #include <fcntl.h>
+ #include <fstream>
+ #include <functional>
