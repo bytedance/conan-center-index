@@ -25,6 +25,9 @@ sources:
     sha256: "76900ab068da86378395a8e125b5cc43dfae671e09ff6462ddfef18676e2165a"
 patches:
   "1.54.3":
+    - patch_file: "patches/1.54.3-fix-incomplete-server-types.patch"
+      patch_description: "Avoid deleting incomplete server types with GCC 16 libstdc++"
+      patch_type: "portability"
     - patch_file: "patches/1.54.3-fix-call-seq-factory.patch"
       patch_description: "Remove template disambiguator from CallSeqFactory call without template arguments"
       patch_type: "portability"
