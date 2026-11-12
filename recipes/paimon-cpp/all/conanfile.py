@@ -128,7 +128,7 @@ class PaimonCppConan(ConanFile):
     def generate(self):
         tc = CMakeToolchain(self)
 
-        flags = "-Wno-error=uninitialized -Wno-error=maybe-uninitialized"
+        flags = "-Wno-error=uninitialized -Wno-error=maybe-uninitialized -Wno-error=deprecated-declarations"
         cxx_flags = flags
         if str(self.settings.compiler) in ("clang", "apple-clang"):
             # Factory registration intentionally uses global constructors.
