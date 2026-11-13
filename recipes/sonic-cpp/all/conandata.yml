@@ -13,6 +13,9 @@
 # limitations under the License.
 
 sources:
+  "20261113":
+    url: "https://github.com/bytedance/sonic-cpp/archive/3ecbef21a42ebc67ef1bbf7ba72d76c44472eee1.zip"
+    sha256: "df6feadc853693b3a0719b627cbf17ef846d8059f109c248ccbacee4c6320635"
   "20261111":
     url: "https://github.com/bytedance/sonic-cpp/archive/c8db640739f08f400265ce3b76b2caeaed8da455.zip"
     sha256: "ed397267e28cd0d56374a9b662d5fcea4e77efcf228bd3c3343cdd72575b8779"
